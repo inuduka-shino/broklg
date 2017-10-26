@@ -10,16 +10,33 @@ define((require) => {
           $
         } = require('./domUtil');
 
-  const $barcode = $('barcode');
+  const $barcode = $('barcode'),
+        $message = $('message');
+
+  function message(msg) {
+    $message.set(msg);
+  }
   //
   quagga.init({
     inputStream : {
       name : 'Live',
       type : 'LiveStream',
-      target: $barcode.dom
+      target: $barcode.dom,
+      constraints: {
+        width: 640,
+        height: 300,
+        facingMode: 'environment',
+      },
     },
     decoder : {
-      readers : ['code_128_reader']
+      readers : ['ean_reader'],
+
+      /* debug: {
+          drawBoundingBox: true,
+          showFrequency: true,
+          drawScanline: true,
+          showPattern: true,
+      }, */
     }
   }, (err) => {
       if (err) {
@@ -28,5 +45,8 @@ define((require) => {
       }
       console.log('Initialization finished. Ready to start');
       quagga.start();
+  });
+  quagga.onDetected((data) => {
+    message(`detected!: ${data.codeResult.code}`);
   });
 });
