@@ -6,5 +6,6 @@
 require.config({
   paths: {
     'maquette': ['/lib/maquette/maquette.min',],
+    'quagga': ['../lib/quagga/quagga.min',],
   },
 });

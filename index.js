@@ -6,17 +6,19 @@
 const path = require('path'),
       Koa = require('koa'),
       Router = require('koa-router'),
-      serv = require('koa-static');
+      serv = require('koa-static-server');
 
 const app = new Koa();
 const router = new Router();
 
-router.get(/.*/, serv(
-  path.join(__dirname, './static/'), {
-    index: 'main.html',
-    extensions: ['html']
-  }
-));
+router.get('/lib/quagga/*', serv({
+  rootDir: path.join(__dirname, 'node_modules/quagga/dist/'),
+  rootPath: '/lib/quagga',
+}));
+router.get(/.*/, serv({
+  rootDir: path.join(__dirname, 'static/'),
+  rootPath: '/',
+}));
 
 app
 .use(router.routes())
