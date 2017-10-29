@@ -12,7 +12,8 @@ define((require) => {
         } = require('./domUtil');
 
   const $barcode = $('barcode'),
-        $message = $('message');
+        $message = $('message'),
+        $isbn = $('detected_isbn');
 
   function message(msg) {
     $message.text(msg);
@@ -60,12 +61,15 @@ define((require) => {
   */
   const detectISBN = new Promise((resolve)=>{
       quagga.onDetected((data) => {
-        const isbncode = isbnjs.parse(data.codeResult.code);
+        const retCode = data.codeResult.code;
+        message(`detected.: ${retCode}`);
+        const isbncode = isbnjs.parse(retCode);
         if (isbncode === null) {
             return;
         }
         if (isbncode.isIsbn13()) {
             resolve(isbncode.asIsbn13(true));
+            $isbn.text(isbncode.asIsbn13(true));
             return;
         }
         if (isbncode.isIsbn10()) {
@@ -75,7 +79,8 @@ define((require) => {
       });
     });
     detectISBN.then((isbnStr)=>{
-        message(`detected!: ${isbnStr}`);
+        message(`DETECTED!: ${isbnStr}`);
+        quagga.end();
     });
 
   });
