@@ -6,6 +6,7 @@
 
 define((require) => {
   const quagga = require('quagga'),
+        isbnjs = require('isbnjs'),
         {
           $
         } = require('./domUtil');
@@ -48,13 +49,33 @@ define((require) => {
           return;
       }
       console.log('Initialization finished. Ready to start');
-      message('quagga start}');
+      message('quagga start');
       quagga.start();
   });
+
+  /*
   quagga.onProcessed((data) => {
     //message(`onProcesse ... : ${typeof data}`);
   });
-  quagga.onDetected((data) => {
-    message(`detected!: ${data.codeResult.code}`);
+  */
+  const detectISBN = new Promise((resolve)=>{
+      quagga.onDetected((data) => {
+        const isbncode = isbnjs.parse(data.codeResult.code);
+        if (isbncode === null) {
+            return;
+        }
+        if (isbncode.isIsbn13()) {
+            resolve(isbncode.asIsbn13(true));
+            return;
+        }
+        if (isbncode.isIsbn10()) {
+            resolve(isbncode.asIsbn10(true));
+            return; //eslint-disable-line no-useless-return
+        }
+      });
+    });
+    detectISBN.then((isbnStr)=>{
+        message(`detected!: ${isbnStr}`);
+    });
+
   });
-});

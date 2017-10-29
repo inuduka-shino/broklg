@@ -15,6 +15,11 @@ router.get('/lib/quagga/*', serv({
   rootDir: path.join(__dirname, 'node_modules/quagga/dist/'),
   rootPath: '/lib/quagga',
 }));
+router.get('/lib/isbnjs/*', serv({
+  rootDir: path.join(__dirname, 'node_modules/isbnjs/'),
+  rootPath: '/lib/isbnjs',
+}));
+
 router.get(/.*/, serv({
   rootDir: path.join(__dirname, 'static/'),
   rootPath: '/',

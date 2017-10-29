@@ -7,6 +7,7 @@ require.config({
   paths: {
     'maquette': ['/lib/maquette/maquette.min',],
     'quagga': ['../lib/quagga/quagga.min',],
+    'isbnjs': ['../lib/isbnjs/isbn',],
   },
   shim: {
     'quagga': {
