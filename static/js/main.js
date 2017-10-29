@@ -14,7 +14,7 @@ define((require) => {
         $message = $('message');
 
   function message(msg) {
-    $message.set(msg);
+    $message.text(msg);
   }
   //
   quagga.init({
@@ -23,28 +23,36 @@ define((require) => {
       type : 'LiveStream',
       target: $barcode.dom,
       constraints: {
-        width: 640,
-        height: 300,
+        //width: 640,
+        //height: 300,
         facingMode: 'environment',
       },
     },
     decoder : {
       readers : ['ean_reader'],
 
-      /* debug: {
+      debug: {
           drawBoundingBox: true,
           showFrequency: true,
           drawScanline: true,
           showPattern: true,
-      }, */
-    }
+      },
+    },
+    locator: {
+      //halfSample: true,
+      patchSize: 'x-large', // x-small, small, medium, large, x-large
+    },
   }, (err) => {
       if (err) {
           console.log(err);
           return;
       }
       console.log('Initialization finished. Ready to start');
+      message('quagga start}');
       quagga.start();
+  });
+  quagga.onProcessed((data) => {
+    //message(`onProcesse ... : ${typeof data}`);
   });
   quagga.onDetected((data) => {
     message(`detected!: ${data.codeResult.code}`);
