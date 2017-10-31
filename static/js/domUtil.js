@@ -45,7 +45,6 @@ define(()=>{
       text: text.bind(null, domInfo),
       addText: addText.bind(null, domInfo),
       addClass: addClass.bind(null, domInfo),
-
       removeClass: removeClass.bind(null, domInfo),
     };
   }

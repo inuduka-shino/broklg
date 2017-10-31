@@ -11,12 +11,21 @@ require.config({
   },
   shim: {
     'quagga': {
-          exports: 'quagga',
-          init() {
-            //eslint-disable-next-line no-undef
-            this.quagga = Quagga;
-          }
-    }
+        exports: 'quagga',
+        init() {
+          //eslint-disable-next-line no-undef
+          this.quagga = Quagga;
+        }
+    },
+
+    'isbnjs': {
+        exports: 'isbn',
+        init() {
+          //eslint-disable-next-line no-undef
+          this.isbn = ISBN;
+        }
+    },
+
   }
 
 });

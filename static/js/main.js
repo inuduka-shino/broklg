@@ -1,15 +1,11 @@
 /*eslint-env browser */
 /*eslint no-console: off */
-/*global define */
+/*global require */
 /*member */
 
 
-define((require) => {
-  const quagga = require('quagga'),
-        isbnjs = require('isbnjs'),
-        {
-          $
-        } = require('./domUtil');
+require(['quagga', 'isbnjs', './domUtil'],(quagga, isbnjs, domUtil) => {
+  const $ = domUtil.$;
 
   const $barcode = $('barcode'),
         $message = $('message'),
@@ -59,28 +55,36 @@ define((require) => {
     //message(`onProcesse ... : ${typeof data}`);
   });
   */
+  //$barcode.addClass('hide');
+  const dummy = Promise.resolve({
+    codeResult: {
+      code: '9784003361313',
+    }
+  });
   const detectISBN = new Promise((resolve)=>{
       quagga.onDetected((data) => {
+      //dummy.then((data) => {
         const retCode = data.codeResult.code;
         message(`detected.: ${retCode}`);
         const isbncode = isbnjs.parse(retCode);
         if (isbncode === null) {
             return;
         }
+        message(`detected.: ${retCode}:${isbncode.isIsbn13()}`);
         if (isbncode.isIsbn13()) {
             resolve(isbncode.asIsbn13(true));
-            $isbn.text(isbncode.asIsbn13(true));
             return;
         }
         if (isbncode.isIsbn10()) {
-            resolve(isbncode.asIsbn10(true));
+            resolve(isbncode.asIsbn13(true));
             return; //eslint-disable-line no-useless-return
         }
       });
     });
     detectISBN.then((isbnStr)=>{
-        message(`DETECTED!: ${isbnStr}`);
-        quagga.end();
+        $isbn.text(isbnStr);
+        quagga.stop();
+        $barcode.addClass('hide');
     });
 
   });
