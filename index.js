@@ -23,6 +23,7 @@ router.get('/lib/isbnjs/*', serv({
 router.get(/.*/, serv({
   rootDir: path.join(__dirname, 'static/'),
   rootPath: '/',
+  index: 'index.html',
 }));
 
 app

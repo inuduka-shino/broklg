@@ -42,16 +42,15 @@ define((require) => {
     });
   }
 
-  function start(cntxt) {
-    return cntxt.initialed.then(()=>{
-          quagga.start();
-          cntxt.show();
-        }).then(()=>{
-          const [detectedPrms, abortFunc] = detectISBN(cntxt);
-          cntxt.detecteAbort = abortFunc;
-          abort(cntxt);
-          return detectedPrms;
-        });
+  async function start(cntxt) {
+    await cntxt.initialed;
+    quagga.start();
+    cntxt.show();
+    const [detectedPrms, abortFunc] = await detectISBN(cntxt);
+    cntxt.detecteAbort = abortFunc;
+    const isbn = await detectedPrms;
+    abort(cntxt);
+    return isbn;
   }
 
   function generate({
