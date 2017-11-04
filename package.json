@@ -1,0 +1,25 @@
+{
+  "name": "broklg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inuduka-shino/broklg.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/inuduka-shino/broklg/issues"
+  },
+  "homepage": "https://github.com/inuduka-shino/broklg#readme",
+  "dependencies": {
+    "isbnjs": "^0.2.2",
+    "koa-router": "^7.2.1",
+    "koa-static-server": "^1.3.2",
+    "quagga": "^0.12.1"
+  }
+}
