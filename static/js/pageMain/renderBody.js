@@ -19,15 +19,26 @@ define((require)=>{
     }
 
     function render() {
+      const msg = h('div', {
+        onLoad: () => {
+          console.log('msg div loaded');
+        },
+      },
+      'barcode on SPA.:');
+
       return h('body',
         {
           classes: bodyClasses,
         },
         [
           h('h2', 'broklg'),
-          h('div', 'barcode on SPA.:'),
-          h('div', {id:'message'}, ''),
-          h('div', {id:'barcode'}, ''),
+          msg,
+          h('div', {
+            id:'message'
+          }, ''),
+          h('div', {
+            id:'barcode'
+          }, ''),
         ]
       );
     }
