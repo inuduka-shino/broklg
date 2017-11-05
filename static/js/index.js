@@ -4,23 +4,16 @@
 /*global define */
 
 define((require)=>{
-  const maquette = require('maquette'),
-        domUtil = require('domUtil'),
-        pageMain = require('./pageMain/renderBody');
-
-  const projector=maquette.createProjector();
-
-  pageMain.setEnv(
-    {
-      scheduleRender: projector.scheduleRender,
-      smartphone: domUtil.deviceType()==='mobile',
-    }
-  );
+  const domUtil = require('domUtil');
 
   domUtil.checkLoadedDocument().then(() => {
-      projector.replace(
-        document.body,
-        pageMain.render
-      );
+    const body = domUtil.body();
+    body.addClass('test');
+    body.text('test');
+    if (domUtil.deviceType()==='mobile') {
+      body.addClass('smartphone');
+      body.text('smartphone test');
+    }
+    body.addClass('test2');
   });
 });
