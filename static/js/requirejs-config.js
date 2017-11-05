@@ -6,7 +6,7 @@
 require.config({
   paths: {
     'maquette': ['/lib/maquette/maquette.min',],
-    'domUtil': ['/lib/domUtil',],
+    'domUtil': ['/lib/common/domUtil',],
     'quagga': ['../lib/quagga/quagga.min',],
     'isbnjs': ['../lib/isbnjs/isbn',],
   },

@@ -20,7 +20,7 @@ define((require)=>{
   domUtil.checkLoadedDocument().then(() => {
       projector.replace(
         document.body,
-        pageMain.bodyRender
+        pageMain.render
       );
   });
 });

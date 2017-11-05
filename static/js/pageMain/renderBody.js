@@ -23,7 +23,12 @@ define((require)=>{
         {
           classes: bodyClasses,
         },
-        []
+        [
+          h('h2', 'broklg'),
+          h('div', 'barcode on SPA.:'),
+          h('div', {id:'message'}, ''),
+          h('div', {id:'barcode'}, ''),
+        ]
       );
     }
 
