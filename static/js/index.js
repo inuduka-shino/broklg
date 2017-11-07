@@ -10,7 +10,7 @@ define((require)=>{
 
   domUtil.checkLoadedDocument().then(() => {
     const body = domUtil.body();
-    body.text('test');
+    body.clear();
     if (domUtil.deviceType()==='mobile') {
       body.addClass('smartphone');
     }
