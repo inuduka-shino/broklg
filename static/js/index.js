@@ -5,16 +5,16 @@
 
 define((require)=>{
   const domUtil = require('domUtil');
-  const pageMain = require('./pageMain/page'),
-        pageMainIndex = require('./pageMain/index');
+  const pageMain = require('./pageMain/page');
 
+  const bodyDom = pageMain.immediate();
   domUtil.checkLoadedDocument().then(() => {
     const body = domUtil.body();
     body.clear();
     if (domUtil.deviceType()==='mobile') {
       body.addClass('smartphone');
     }
-    body.append(pageMain.doms());
-    pageMainIndex(pageMain.handle());
+    body.append(bodyDom);
+    pageMain.delay();
   });
 });
