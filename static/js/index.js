@@ -11,10 +11,14 @@ define((require)=>{
   domUtil.checkLoadedDocument().then(() => {
     const body = domUtil.body();
     body.clear();
+    const info = {
+      body,
+    };
     if (domUtil.deviceType()==='mobile') {
+      info.mobile = true;
       body.addClass('smartphone');
     }
     body.append(bodyDom);
-    pageMain.delay();
+    pageMain.delay(info);
   });
 });
