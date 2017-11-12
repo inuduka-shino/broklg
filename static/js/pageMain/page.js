@@ -62,15 +62,21 @@ define((require) => {
     const reader = readISBN({
       dom: pReader.dom,
       show: ()=>{
-        //pReader.removeClass('hide');
+        pReader.removeClass('hide');
       },
       hide: ()=>{
-        //pReader.addClass('hide');
-      }
+        pReader.addClass('hide');
+      },
+      message,
+    });
+    reader.start().then((isbn)=>{
+      message(`detected:${isbn}`);
     });
 
     pButton.on('click',() => {
-      reader.start();
+      reader.start().then((isbn)=>{
+        message(`detected:${isbn}`);
+      });
       pColButton.addClass('hide');
       pColAbortButton.removeClass('hide');
     });

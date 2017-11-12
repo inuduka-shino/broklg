@@ -6,13 +6,17 @@ define((require) => {
   const quagga = require('quagga'),
         isbnjs = require('isbnjs');
 
-  function detectISBN() {
+  function detectISBN(cntxt) {
     let abort = null;
+    const msg = cntxt.message;
     const prms = new Promise((resolve, reject)=>{
         abort = reject;
         //resolve('9784003361313');
+        //console.log('start detect');
+        msg('sart detect');
         quagga.onDetected((data) => {
           const retCode = data.codeResult.code;
+          //msg(`-- onDetect:${retCode}`);
           const isbncode = isbnjs.parse(retCode);
           if (isbncode === null) {
               return;
@@ -34,7 +38,7 @@ define((require) => {
   function abort(cntxt) {
 
     return cntxt.initialed.then(()=>{
-      quagga.stop();
+      // quagga.stop();
       cntxt.hide();
 
       if (cntxt.detecteAbort !== null) {
@@ -59,12 +63,14 @@ define((require) => {
     dom,
     show,
     hide,
+    message,
   }) {
     const cntxt = {
       dom, // barcode detection camera video
       show, // dom show function
       hide, // dom hide function
       detecteAbort: null,
+      message,
     };
 
     cntxt.initialed = new Promise((resolve, reject) => {
@@ -107,7 +113,6 @@ define((require) => {
         abort: abort.bind(null, cntxt),
     };
   }
-
 
   return generate;
 
