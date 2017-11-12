@@ -28,12 +28,13 @@ define((require) => {
         pAbortButton = create('button',textElm)
                      .addClass('btn')
                      .addClass('btn-empty')
-                     .addClass('hide')
                      .text('Abort'),
         pAreaMsg = row(pMessage),
+        pColButton = col(pButton,'xs-2').addClass('hide'),
+        pColAbortButton = col(pAbortButton,'xs-2'),
         pAreaScan = row([
-          col(pButton,'xs-2'),
-          col(pAbortButton,'xs-2')
+          pColButton,
+          pColAbortButton,
         ]);
 
 
@@ -56,27 +57,27 @@ define((require) => {
     const pErrorMsg = create('div',textElm).addClass('col').text('error...');
     pAreaMsg.append(pErrorMsg);
 
-    const pReader = create('div').addClass('hide');
+    const pReader = create('div');
     pAreaScan.append(pReader);
     const reader = readISBN({
       dom: pReader.dom,
       show: ()=>{
-        pReader.removeClass('hide');
+        //pReader.removeClass('hide');
       },
       hide: ()=>{
-        pReader.addClass('hide');
+        //pReader.addClass('hide');
       }
     });
 
     pButton.on('click',() => {
       reader.start();
-      pButton.addClass('hide');
-      pAbortButton.removeClass('hide');
+      pColButton.addClass('hide');
+      pColAbortButton.removeClass('hide');
     });
     pAbortButton.on('click',() => {
       reader.abort();
-      pAbortButton.addClass('hide');
-      pButton.removeClass('hide');
+      pColAbortButton.addClass('hide');
+      pColButton.removeClass('hide');
     });
 
   }

@@ -32,20 +32,22 @@ define((require) => {
   }
 
   function abort(cntxt) {
-    cntxt.hide();
-    if (cntxt.detecteAbort !== null) {
-      cntxt.detecteAbort();
-    }
-    cntxt.detecteAbort = null;
-    cntxt.initialed.then(()=>{
+
+    return cntxt.initialed.then(()=>{
       quagga.stop();
+      cntxt.hide();
+
+      if (cntxt.detecteAbort !== null) {
+        cntxt.detecteAbort();
+      }
+      cntxt.detecteAbort = null;
     });
   }
 
   async function start(cntxt) {
     await cntxt.initialed;
-    quagga.start();
     cntxt.show();
+    quagga.start();
     const [detectedPrms, abortFunc] = await detectISBN(cntxt);
     cntxt.detecteAbort = abortFunc;
     const isbn = await detectedPrms;
@@ -96,6 +98,7 @@ define((require) => {
               reject(err);
               return;
           }
+          // quagga.stop();
           resolve();
       });
     });
