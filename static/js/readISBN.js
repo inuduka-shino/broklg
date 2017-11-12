@@ -6,33 +6,23 @@ define((require) => {
   const quagga = require('quagga'),
         isbnjs = require('isbnjs');
 
-  function detectISBN(cntxt) {
-    let abort = null;
-    const msg = cntxt.message;
-    const prms = new Promise((resolve, reject)=>{
-        abort = reject;
-        //resolve('9784003361313');
-        //console.log('start detect');
-        msg('sart detect');
-        quagga.onDetected((data) => {
-          const retCode = data.codeResult.code;
-          //msg(`-- onDetect:${retCode}`);
-          const isbncode = isbnjs.parse(retCode);
-          if (isbncode === null) {
-              return;
-          }
-          if (isbncode.isIsbn13()) {
-              resolve(isbncode.asIsbn13(true));
-              return;
-          }
-          if (isbncode.isIsbn10()) {
-              resolve(isbncode.asIsbn13(true));
-              return; //eslint-disable-line no-useless-return
-          }
-        });
-      });
-
-    return [prms, abort];
+  function detectISBNStart(fb) {
+    quagga.onDetected((data) => {
+      const retCode = data.codeResult.code;
+      //msg(`-- onDetect:${retCode}`);
+      const isbncode = isbnjs.parse(retCode);
+      if (isbncode === null) {
+          return;
+      }
+      if (isbncode.isIsbn13()) {
+          fb(isbncode.asIsbn13(true));
+          return;
+      }
+      if (isbncode.isIsbn10()) {
+          fb(isbncode.asIsbn13(true));
+          return; //eslint-disable-line no-useless-return
+      }
+    });
   }
 
   function abort(cntxt) {
@@ -51,10 +41,14 @@ define((require) => {
   async function start(cntxt) {
     await cntxt.initialed;
     cntxt.show();
-    quagga.start();
-    const [detectedPrms, abortFunc] = await detectISBN(cntxt);
-    cntxt.detecteAbort = abortFunc;
-    const isbn = await detectedPrms;
+    quagga.show();
+
+    const prmsDetectISBN = new Promise((resolve) =>{
+      detectISBNStart((isbn)=>{
+          resolve(isbn);
+      });
+    });
+    const isbn = await prmsDetectISBN;
     abort(cntxt);
     return isbn;
   }
