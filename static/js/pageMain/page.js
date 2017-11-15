@@ -30,8 +30,8 @@ define((require) => {
                      .addClass('btn-empty')
                      .text('Abort'),
         pAreaMsg = row(pMessage),
-        pColButton = col(pButton,'xs-2').addClass('hide'),
-        pColAbortButton = col(pAbortButton,'xs-2'),
+        pColButton = col(pButton,'xs-2'),
+        pColAbortButton = col(pAbortButton,'xs-2').addClass('hide'),
         pAreaScan = row([
           pColButton,
           pColAbortButton,
@@ -69,9 +69,12 @@ define((require) => {
       },
       message,
     });
+
+    /*
     reader.start().then((isbn)=>{
       message(`detected:${isbn}`);
     });
+    */
 
     pButton.on('click',() => {
       reader.start().then((isbn)=>{
@@ -81,6 +84,7 @@ define((require) => {
       pColAbortButton.removeClass('hide');
     });
     pAbortButton.on('click',() => {
+      message('abort');
       reader.abort();
       pColAbortButton.addClass('hide');
       pColButton.removeClass('hide');

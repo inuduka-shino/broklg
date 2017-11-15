@@ -38,18 +38,27 @@ define((require) => {
             return;
         }
         // quagga.stop();
+        // quagga.start();
         resolve();
     });
   }
   function detectISBNStart(cntxt) {
     // quagga.stop();
+    quagga.onProcessed(()=>{
+      //cntxt.message('onprocess');
+      const cb = cntxt.detectISBNcb;
+      if (cb !== null) {
+        cb('ABC');
+      }
+    });
     quagga.onDetected((data) => {
       const cb = cntxt.detectISBNcb;
       if (cb === null) {
+        cntxt.message('CB nULL');
         return;
       }
       const retCode = data.codeResult.code;
-      //msg(`-- onDetect:${retCode}`);
+      cntxt.message(`-- onDetect:${retCode}`);
       const isbncode = isbnjs.parse(retCode);
       if (isbncode === null) {
           return;
@@ -67,7 +76,7 @@ define((require) => {
   }
 
   function abort(cntxt) {
-    //quagga.stop();
+    // quagga.stop();
     cntxt.hide();
     if (cntxt.detecteAbort !== null) {
       cntxt.detecteAbort();
@@ -78,13 +87,11 @@ define((require) => {
 
   function start(cntxt) {
     cntxt.show();
-    //quagga.start();
+    quagga.start();
     const prms = new Promise((resolve,reject) =>{
       cntxt.detectISBNcb = resolve;
       cntxt.detecteAbort = reject;
     });
-    cntxt.detectISBNcb = null;
-    cntxt.detecteAbort = null;
     prms.then(abort.bind(null, cntxt));
     return prms;
   }
@@ -106,6 +113,7 @@ define((require) => {
 
     cntxt.initialed = new Promise(initQuagga.bind(null, cntxt));
     cntxt.initialed.then(detectISBNStart.bind(null,cntxt));
+    message('debug message');
     return {
         start: start.bind(null, cntxt),
         abort: abort.bind(null, cntxt),
