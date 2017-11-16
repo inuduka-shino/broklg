@@ -55,8 +55,14 @@ define((require) => {
       message('Mobile !');
     }
     const pErrorMsg = create('div',textElm).addClass('col').text('error...');
-    pAreaMsg.append(pErrorMsg);
-
+    const pTraceMsg = create('div',textElm).addClass('col').text('trace..');
+    //pAreaMsg.append(pErrorMsg);
+    pAreaMsg.append(pTraceMsg);
+    function trace(msg) {
+      const d = new Date();
+      pTraceMsg.text(`${d.toLocaleTimeString()}:${msg}`);
+    }
+    trace('trace test');
     const pReader = create('div');
     pAreaScan.append(pReader);
     const reader = readISBN({
@@ -67,7 +73,7 @@ define((require) => {
       hide: ()=>{
         pReader.addClass('hide');
       },
-      message,
+      message: trace,
     });
 
     /*

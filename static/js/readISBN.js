@@ -43,13 +43,9 @@ define((require) => {
     });
   }
   function detectISBNStart(cntxt) {
-    // quagga.stop();
+    cntxt.initialed.then(quagga.start.bind(null));
     quagga.onProcessed(()=>{
       //cntxt.message('onprocess');
-      const cb = cntxt.detectISBNcb;
-      if (cb !== null) {
-        cb('ABC');
-      }
     });
     quagga.onDetected((data) => {
       const cb = cntxt.detectISBNcb;
@@ -87,7 +83,7 @@ define((require) => {
 
   function start(cntxt) {
     cntxt.show();
-    quagga.start();
+    //quagga.start();
     const prms = new Promise((resolve,reject) =>{
       cntxt.detectISBNcb = resolve;
       cntxt.detecteAbort = reject;
