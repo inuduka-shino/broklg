@@ -34,11 +34,16 @@ define((require) => {
   }
   function clickHandle() {
     message('click button');
-    return fetch('https://api.booklog.jp/json/xxxxxxxx').then((data)=>{
-      message(data);
+    return fetch('https://api.booklog.jp/json/xxxxxxxx',{
+      mode: 'no-cors',
+    }).then((data)=>{
+      return data.json();
     }, (err)=>{
       message('ERROR!');
       throw err;
+    }).then((rsp)=>{
+      console.log('');
+      message(rsp);
     });
   }
   function immediate() {

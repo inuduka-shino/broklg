@@ -30,8 +30,8 @@ define((require) => {
                      .addClass('btn-empty')
                      .text('Abort'),
         pAreaMsg = row(pMessage),
-        pColButton = col(pButton,'xs-2'),
-        pColAbortButton = col(pAbortButton,'xs-2').addClass('hide'),
+        pColButton = col(pButton,'xs-2').addClass('hide'),
+        pColAbortButton = col(pAbortButton,'xs-2'),
         pAreaScan = row([
           pColButton,
           pColAbortButton,
@@ -55,42 +55,26 @@ define((require) => {
       message('Mobile !');
     }
     const pErrorMsg = create('div',textElm).addClass('col').text('error...');
-    const pTraceMsg = create('div',textElm).addClass('col').text('trace..');
-    //pAreaMsg.append(pErrorMsg);
-    pAreaMsg.append(pTraceMsg);
-    function trace(msg) {
-      const d = new Date();
-      pTraceMsg.text(`${d.toLocaleTimeString()}:${msg}`);
-    }
-    trace('trace test');
+    pAreaMsg.append(pErrorMsg);
+
     const pReader = create('div');
     pAreaScan.append(pReader);
     const reader = readISBN({
       dom: pReader.dom,
       show: ()=>{
-        pReader.removeClass('hide');
+        //pReader.removeClass('hide');
       },
       hide: ()=>{
-        pReader.addClass('hide');
-      },
-      message: trace,
+        //pReader.addClass('hide');
+      }
     });
-
-    /*
-    reader.start().then((isbn)=>{
-      message(`detected:${isbn}`);
-    });
-    */
 
     pButton.on('click',() => {
-      reader.start().then((isbn)=>{
-        message(`detected:${isbn}`);
-      });
+      reader.start();
       pColButton.addClass('hide');
       pColAbortButton.removeClass('hide');
     });
     pAbortButton.on('click',() => {
-      message('abort');
       reader.abort();
       pColAbortButton.addClass('hide');
       pColButton.removeClass('hide');
