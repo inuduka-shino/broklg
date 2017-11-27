@@ -5,6 +5,7 @@
 define((require) => {
   const {
           create,
+          head,
         } = require('domUtil');
 
   function row(children) {
@@ -32,7 +33,8 @@ define((require) => {
   function message(msg) {
     pMessage.text(msg);
   }
-  function clickHandle() {
+  //eslint-disable-next-line no-unused-vars
+  function clickHandleFetch() {
     message('click button');
     return fetch('https://api.booklog.jp/json/xxxxxxxx',{
       mode: 'cors',
@@ -45,6 +47,18 @@ define((require) => {
       console.log(err);
       throw err;
     });
+  }
+  function clickHandle() {
+    message('click button');
+    const $script = create('script');
+    // <script type="text/javascript" src="http://api.booklog.jp/json/urakey?category=0&count=15&callback=booklog_minishelf"></script>
+    $script
+      .setAttr('type', 'text/javascript')
+      .setAttr('src', 'https://api.booklog.jp/json/xxxxxx?category=0&count=15&callback=callback');
+    window.callback = (data)=>{
+      console.log(data);
+    };
+    head().append($script);
   }
   function immediate() {
     return [
