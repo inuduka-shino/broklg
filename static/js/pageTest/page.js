@@ -48,17 +48,46 @@ define((require) => {
       throw err;
     });
   }
-  function clickHandle() {
-    message('click button');
+  function callJsonp(url,params) {
+    const callbackName = params.callback;
+    const paramStr = Object.entries(params).map((keyval)=>{
+      return keyval.join('=');
+    }).join('&');
+
     const $script = create('script');
-    // <script type="text/javascript" src="http://api.booklog.jp/json/urakey?category=0&count=15&callback=booklog_minishelf"></script>
     $script
       .setAttr('type', 'text/javascript')
-      .setAttr('src', 'https://api.booklog.jp/json/xxxxxx?category=0&count=15&callback=callback');
-    window.callback = (data)=>{
-      console.log(data);
-    };
-    head().append($script);
+      .setAttr('src', [url, paramStr].join('?'));
+    const prms = new Promise((resolve, reject)=>{
+      window[callbackName] = (data)=>{
+        resolve(data);
+        $script.remove();
+        // delete window[callbackName];
+      };
+      try {
+        head().append($script);
+      } catch (err) {
+        reject(err);
+      }
+    });
+    return prms;
+  }
+  function clickHandle() {
+    message('click button');
+    const prms = callJsonp(
+      'https://api.booklog.jp/json/xxxxxx',
+      {
+        category: '0',
+        count: 15,
+        callback: 'callback',
+      }
+    );
+    return prms.then((data)=>{
+      message(`${data.tana.name}を取得しました。`);
+    }).catch((err)=>{
+      message('jsonp call ERROR!');
+      throw err;
+    });
   }
   function immediate() {
     return [
