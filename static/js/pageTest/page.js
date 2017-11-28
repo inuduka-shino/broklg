@@ -5,8 +5,10 @@
 define((require) => {
   const {
           create,
-          head,
-        } = require('domUtil');
+        } = require('domUtil'),
+        {
+          callJsonp,
+        } = require('jsonp');
 
   function row(children) {
     const parent = create('div').addClass('row');
@@ -47,30 +49,6 @@ define((require) => {
       console.log(err);
       throw err;
     });
-  }
-  function callJsonp(url,params) {
-    const callbackName = params.callback;
-    const paramStr = Object.entries(params).map((keyval)=>{
-      return keyval.join('=');
-    }).join('&');
-
-    const $script = create('script');
-    $script
-      .setAttr('type', 'text/javascript')
-      .setAttr('src', [url, paramStr].join('?'));
-    const prms = new Promise((resolve, reject)=>{
-      window[callbackName] = (data)=>{
-        resolve(data);
-        $script.remove();
-        // delete window[callbackName];
-      };
-      try {
-        head().append($script);
-      } catch (err) {
-        reject(err);
-      }
-    });
-    return prms;
   }
   function clickHandle() {
     message('click button');
