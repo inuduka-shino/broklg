@@ -20,6 +20,11 @@ router.get('/lib/isbnjs/*', serv({
   rootPath: '/lib/isbnjs',
 }));
 
+router.get('', serv({
+  rootDir: path.join(__dirname, 'static/'),
+  rootPath: '/',
+  index: 'test.html',
+}));
 router.get(/.*/, serv({
   rootDir: path.join(__dirname, 'static/'),
   rootPath: '/',
