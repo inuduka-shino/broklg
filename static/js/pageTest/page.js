@@ -4,11 +4,23 @@
 
 define((require) => {
   const {
+          checkLoadedDocument,
+          body,
+          deviceType,
           create,
-        } = require('domUtil'),
-        {
-          callJsonp,
-        } = require('jsonp');
+
+        } = require('domUtil');
+
+    const ui = {};
+    const loaded = checkLoadedDocument().then(() => {
+      const pBody = body();
+      pBody.clear();
+      if (deviceType()==='mobile') {
+        ui.mobile = true;
+        pBody.addClass('smartphone');
+      }
+      return pBody;
+    });
 
   function row(children) {
     const parent = create('div').addClass('row');
@@ -28,76 +40,91 @@ define((require) => {
                       .addClass('btn')
                       .addClass('btn-empty')
                       .text('start'),
-        pColButton = col(pButton,'xs-1'),
-        pAreaPlay = row(pColButton);
+        pClearButton = create('button',textElm)
+                      .addClass('btn')
+                      .addClass('btn-empty')
+                      .text('clear'),
+        pColButton = col(pButton,'xs-2'),
+        pAreaPlay = row([pColButton, col(pClearButton,'xs-2')]);
 
 
-  function message(msg) {
+  const message = ui.message = (msg) => {
     pMessage.text(msg);
-  }
-  //eslint-disable-next-line no-unused-vars
-  function clickHandleFetch() {
-    message('click button');
-    return fetch('https://api.booklog.jp/json/xxxxxxxx',{
-      mode: 'cors',
-    }).then((response)=>{
-      return response.text();
-    }).then((text)=>{
-      console.log(text);
-      message(text);
-    }).catch((err)=>{
-      console.log(err);
-      throw err;
-    });
-  }
-  function clickHandle() {
-    message('click button');
-    const prms = callJsonp(
-      'https://api.booklog.jp/json/xxxxxx',
-      {
-        category: '0',
-        count: 15,
-        callback: 'callback',
-      }
-    );
-    return prms.then((data)=>{
-      message(`${data.tana.name}を取得しました。`);
-    }).catch((err)=>{
-      message('jsonp call ERROR!');
-      throw err;
-    });
-  }
-  function immediate() {
-    return [
+  };
+
+
+  loaded.then((pBody)=>{
+    pBody.append([
       pTitle,
       pAreaMsg,
       pAreaPlay,
-    ];
-  }
-  function delay(info) {
-    console.log('ready.');
-    message('ready.');
-    if (info.mobile) {
-      message('Mobile !');
-    }
+    ]);
+  });
 
-    let stat = 'init';
+  function behaveOfButton({
+                  pButton,
+                  workingLabel,
+                  errorLabel,
+              }) {
+    let stat = 'release'; // push error
+    const label = pButton.getText();
+    const handles = [];
+
     pButton.on('click',() =>{
-      if (stat !== 'init') {
+      if (stat !== 'release') {
         return;
       }
       stat = 'push';
-      pButton.text('working...');
-      clickHandle().catch(()=>{
-        return true;
-      }).then(()=>{
-        stat = 'init';
-        pButton.text('start');
+      pButton.text(workingLabel);
+
+      const prmsHandles = handles.reduce(
+          (prevPrms,handle)=>{
+            return prevPrms.then(handle);
+          },
+          Promise.resolve()
+        );
+      prmsHandles.then(()=>{
+        stat = 'release';
+        pButton.text(label);
+      },(err)=>{
+        message(err);
+        console.log('Error on ClickHandle');
+        console.log(err);
+        stat = 'ERROR';
+        pButton.text(errorLabel);
       });
+    });
+
+    function regHandle(handle) {
+      handles.push(handle);
+    }
+
+    return {
+      regHandle,
+    };
+  }
+
+  function delay() {
+    ui.onClickButtonA = behaveOfButton({
+      pButton: pButton, //eslint-disable-line object-shorthand
+      workingLabel: 'working...',
+      errorLabel: 'ERROR!',
+    }).regHandle;
+    ui.onClickButtonClear = behaveOfButton({
+      pButton: pClearButton, //eslint-disable-line object-shorthand
+      workingLabel: 'working...',
+      errorLabel: 'ERROR!',
+    }).regHandle;
+    return Promise.resolve();
+  }
+
+  function start(handler) {
+    return loaded.then(async ()=>{
+      await delay();
+      await handler(ui);
     });
   }
   return {
-    immediate,
-    delay,
+    start,
   };
 });

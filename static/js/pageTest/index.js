@@ -4,21 +4,64 @@
 /*global define */
 
 define((require)=>{
-  const domUtil = require('domUtil');
-  const page = require('./page');
+  const
+        //{
+        //  callJsonp,
+        //} = require('jsonp'),
+        page = require('./page');
 
-  const bodyDom = page.immediate();
-  domUtil.checkLoadedDocument().then(() => {
-    const body = domUtil.body();
-    body.clear();
-    const info = {
-      body,
-    };
-    if (domUtil.deviceType()==='mobile') {
-      info.mobile = true;
-      body.addClass('smartphone');
+
+  page.start((ui) =>{
+    const message = ui.message;
+    if (ui.mobile) {
+      message('Mobile Start!');
+    } else {
+      message('ready.');
     }
-    body.append(bodyDom);
-    page.delay(info);
+    ui.onClickButtonA(()=>{
+      message('click!');
+    });
+    ui.onClickButtonClear(()=>{
+      message('--');
+    });
   });
 });
+
+/*
+  function clickHandle() {
+    message('click button');
+    const prms = callJsonp(
+      'https://api.booklog.jp/json/xxxxxx',
+      {
+        category: '0',
+        count: 15,
+        callback: 'callback',
+      }
+    );
+    return prms.then((data)=>{
+      message(`${data.tana.name}を取得しました。`);
+    }).catch((err)=>{
+      message('jsonp call ERROR!');
+      throw err;
+    });
+  }
+
+});
+*/
+/*
+//eslint-disable-next-line no-unused-vars
+function clickHandleFetch() {
+  message('click button');
+  return fetch('https://api.booklog.jp/json/xxxxxxxx',{
+    mode: 'cors',
+  }).then((response)=>{
+    return response.text();
+  }).then((text)=>{
+    console.log(text);
+    message(text);
+  }).catch((err)=>{
+    console.log(err);
+    throw err;
+  });
+}
+*/
