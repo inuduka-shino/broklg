@@ -5,11 +5,8 @@
 
 define((require)=>{
   const
-        //{
-        //  callJsonp,
-        //} = require('jsonp'),
+        booklog = require('../booklog'),
         page = require('./page');
-
 
   page.start((ui) =>{
     const message = ui.message;
@@ -19,7 +16,12 @@ define((require)=>{
       message('ready.');
     }
     ui.onClickButtonA(()=>{
-      message('click!');
+      return booklog.getBookshelf('xxxxxx').then((data)=>{
+        message(`${data.tana.name}を取得しました。`);
+      }).catch((err)=>{
+        message('jsonp call ERROR!');
+        throw err;
+      });
     });
     ui.onClickButtonClear(()=>{
       message('--');

@@ -12,15 +12,6 @@ define((require) => {
         } = require('domUtil');
 
     const ui = {};
-    const loaded = checkLoadedDocument().then(() => {
-      const pBody = body();
-      pBody.clear();
-      if (deviceType()==='mobile') {
-        ui.mobile = true;
-        pBody.addClass('smartphone');
-      }
-      return pBody;
-    });
 
   function row(children) {
     const parent = create('div').addClass('row');
@@ -51,15 +42,6 @@ define((require) => {
   const message = ui.message = (msg) => {
     pMessage.text(msg);
   };
-
-
-  loaded.then((pBody)=>{
-    pBody.append([
-      pTitle,
-      pAreaMsg,
-      pAreaPlay,
-    ]);
-  });
 
   function behaveOfButton({
                   pButton,
@@ -104,7 +86,22 @@ define((require) => {
     };
   }
 
-  function delay() {
+  const loaded = checkLoadedDocument().then(() => {
+    const pBody = body();
+    pBody.clear();
+    if (deviceType()==='mobile') {
+      ui.mobile = true;
+      pBody.addClass('smartphone');
+    }
+    return pBody;
+  }).then((pBody)=>{
+    pBody.append([
+      pTitle,
+      pAreaMsg,
+      pAreaPlay,
+    ]);
+  }).then(()=>{
+    // ------
     ui.onClickButtonA = behaveOfButton({
       pButton: pButton, //eslint-disable-line object-shorthand
       workingLabel: 'working...',
@@ -116,11 +113,10 @@ define((require) => {
       errorLabel: 'ERROR!',
     }).regHandle;
     return Promise.resolve();
-  }
+  });
 
   function start(handler) {
     return loaded.then(async ()=>{
-      await delay();
       await handler(ui);
     });
   }
