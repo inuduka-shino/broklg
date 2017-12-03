@@ -6,7 +6,15 @@
 define((require)=>{
   const
         booklog = require('../booklog'),
+        {
+          generate: genSaver,
+        } = require('../clientSaver'),
         page = require('./page');
+  const saver = genSaver();
+  //saver.saveSetting('environ', {
+  //  userid: 'xxxxxxxx',
+  //});
+  const prmsEnviron = saver.loadSetting('environ');
 
   page.start((ui) =>{
     const message = ui.message;
@@ -15,17 +23,23 @@ define((require)=>{
     } else {
       message('ready.');
     }
-    ui.onClickButtonA(()=>{
-      return booklog.getBookshelf('xxxxxx').then((data)=>{
-        message(`${data.tana.name}を取得しました。`);
-      }).catch((err)=>{
-        message('jsonp call ERROR!');
-        throw err;
+    prmsEnviron.then((env)=>{
+      ui.onClickButtonA(()=>{
+        return booklog.getBookshelf(env.userid).then((data)=>{
+          message(`${data.tana.name}を取得しました。`);
+        }).catch((err)=>{
+          message('jsonp call ERROR!');
+          throw err;
+        });
       });
     });
     ui.onClickButtonClear(()=>{
       message('--');
     });
+    ui.onInputEnvButton(()=>{
+      message('click inputEvent button');
+    });
+
   });
 });
 

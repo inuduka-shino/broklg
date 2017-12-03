@@ -35,8 +35,17 @@ define((require) => {
                       .addClass('btn')
                       .addClass('btn-empty')
                       .text('clear'),
+        pInputEnvButton = create('button',textElm)
+                      .addClass('btn')
+                      .addClass('btn-empty')
+                      .text('input Env'),
         pColButton = col(pButton,'xs-2'),
-        pAreaPlay = row([pColButton, col(pClearButton,'xs-2')]);
+        pAreaPlay = row(
+          [
+            pColButton,
+            col(pInputEnvButton,'xs-3'),
+            col(pClearButton,'xs-2'),
+          ]);
 
 
   const message = ui.message = (msg) => {
@@ -107,14 +116,19 @@ define((require) => {
       workingLabel: 'working...',
       errorLabel: 'ERROR!',
     }).regHandle;
-    ui.onClickButtonClear = behaveOfButton({
-      pButton: pClearButton, //eslint-disable-line object-shorthand
-      workingLabel: 'working...',
+    ui.onInputEnvButton = behaveOfButton({
+      pButton: pInputEnvButton,
+      workingLabel: 'opened!',
       errorLabel: 'ERROR!',
     }).regHandle;
+    ui.onClickButtonClear = behaveOfButton({
+      pButton: pClearButton, //eslint-disable-line object-shorthand
+      workingLabel: '...',
+      errorLabel: 'ERROR!',
+    }).regHandle;
+
     return Promise.resolve();
   });
-
   function start(handler) {
     return loaded.then(async ()=>{
       await handler(ui);
