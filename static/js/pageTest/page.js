@@ -95,6 +95,42 @@ define((require) => {
     };
   }
 
+  const envInputArea = (()=>{
+    const handlers=[];
+    const pInput = create('input')
+            .addClass('form-control')
+            .setAttr('type','text'),
+          pForm = create('form')
+            .addClass('col')
+            .append(pInput)
+            .on(
+              'submit',
+              (event)=>{
+                event.preventDefault();
+                handlers.reduce((prevObj, func)=>{
+                  try {
+                    return prevObj.then(func.bind(null,pInput.val()));
+                  } catch (err) {
+                    return Promise.reject(err);
+                  }
+                }, Promise.resolve());
+              });
+    const pArea = row(pForm);
+    function genParts() {
+      return [
+         pArea,
+        //row(col(create('div',textElm).text('AAA'))),
+      ];
+    }
+    function onSubmit(func) {
+      handlers.push(func);
+    }
+    return {
+      genParts,
+      onSubmit,
+    };
+  })();
+
   const loaded = checkLoadedDocument().then(() => {
     const pBody = body();
     pBody.clear();
@@ -109,16 +145,12 @@ define((require) => {
       pAreaMsg,
       pAreaPlay,
     ]);
-  }).then(()=>{
+    return pBody;
+  }).then((pBody)=>{
     // ------
     ui.onClickButtonA = behaveOfButton({
       pButton: pButton, //eslint-disable-line object-shorthand
       workingLabel: 'working...',
-      errorLabel: 'ERROR!',
-    }).regHandle;
-    ui.onInputEnvButton = behaveOfButton({
-      pButton: pInputEnvButton,
-      workingLabel: 'opened!',
       errorLabel: 'ERROR!',
     }).regHandle;
     ui.onClickButtonClear = behaveOfButton({
@@ -127,8 +159,17 @@ define((require) => {
       errorLabel: 'ERROR!',
     }).regHandle;
 
+    pBody.append(envInputArea.genParts());
+    ui.onInputEnvButton = behaveOfButton({
+      pButton: pInputEnvButton,
+      workingLabel: 'opened!',
+      errorLabel: 'ERROR!',
+    }).regHandle;
+    ui.onSubmitEnvInputArea = envInputArea.onSubmit;
+
     return Promise.resolve();
   });
+
   function start(handler) {
     return loaded.then(async ()=>{
       await handler(ui);

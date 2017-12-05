@@ -39,7 +39,9 @@ define((require)=>{
     ui.onInputEnvButton(()=>{
       message('click inputEvent button');
     });
-
+    ui.onSubmitEnvInputArea((val)=>{
+      message(`submit input area:${val}`);
+    });
   });
 });
 
