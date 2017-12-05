@@ -14,16 +14,30 @@ define((require)=>{
   //saver.saveSetting('environ', {
   //  userid: 'xxxxxxxx',
   //});
-  const prmsEnviron = saver.loadSetting('environ');
 
-  page.start((ui) =>{
-    const message = ui.message;
-    if (ui.mobile) {
-      message('Mobile Start!');
-    } else {
-      message('ready.');
-    }
-    prmsEnviron.then((env)=>{
+  const envPrms = saver.loadSetting('environ').then((env)=>{
+    return {
+      userid: env.userid,
+    };
+  });
+  const pagePrms = new Promise((resolve, reject)=>{
+    page.start((ui)=>{
+      try {
+        resolve(ui);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
+
+  Promise.all([envPrms, pagePrms])
+    .then(([env, ui])=>{
+      const message = ui.message;
+      if (ui.mobile) {
+        message('Mobile Start!');
+      } else {
+        message('ready.');
+      }
       ui.onClickButtonA(()=>{
         return booklog.getBookshelf(env.userid).then((data)=>{
           message(`${data.tana.name}を取得しました。`);
@@ -32,17 +46,17 @@ define((require)=>{
           throw err;
         });
       });
+      ui.onClickButtonClear(()=>{
+        message('--');
+      });
+      ui.onInputEnvButton(()=>{
+        message('click inputEvent button');
+      });
+      ui.onSubmitEnvInputArea((val)=>{
+        message(`submit input area:${val}`);
+        env.userid = val;
+      });
     });
-    ui.onClickButtonClear(()=>{
-      message('--');
-    });
-    ui.onInputEnvButton(()=>{
-      message('click inputEvent button');
-    });
-    ui.onSubmitEnvInputArea((val)=>{
-      message(`submit input area:${val}`);
-    });
-  });
 });
 
 /*
