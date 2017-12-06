@@ -21,12 +21,37 @@ define((require) => {
   function col(child, colSize) {
     return create('div').addClass('col').addClass(colSize).append(child);
   }
+  function respSelf(val) {
+    return ()=>{
+      return val;
+    };
+  }
+  function genBar(children=null) {
+    const pOuter = create('div').addClass('row'),
+          pInner = create('div').addClass('col');
+    pOuter.append(pInner);
+    if (children !== null) {
+      pInner.append(children);
+    }
+    pOuter.directAppend = pOuter.append;
+    pOuter.append = pInner.append;
+    pOuter.inner = pInner;
+
+    return pOuter;
+  }
   const textElm = {
           text: true,
         },
-        pTitle = create('h2', textElm).text('Broklg search'),
-        pMessage = create('div',textElm).addClass('col').text('...'),
-        pAreaMsg = row(pMessage),
+        pTitle = create('h2', textElm).text('Broklg search');
+
+const
+        pMessage = create('span',textElm).text('...'),
+        pAreaMsg = genBar(pMessage),
+        message = ui.message = (msg) => {
+          pMessage.text(msg);
+        };
+
+const
         pButton = create('button',textElm)
                       .addClass('btn')
                       .addClass('btn-empty')
@@ -39,18 +64,12 @@ define((require) => {
                       .addClass('btn')
                       .addClass('btn-empty')
                       .text('input Env'),
-        pColButton = col(pButton,'xs-2'),
-        pAreaPlay = row(
+        pAreaPlay = genBar(
           [
-            pColButton,
-            col(pInputEnvButton,'xs-3'),
-            col(pClearButton,'xs-2'),
+            pButton,
+            pInputEnvButton,
+            pClearButton,
           ]);
-
-
-  const message = ui.message = (msg) => {
-    pMessage.text(msg);
-  };
 
   function behaveOfButton({
                   pButton,
@@ -100,8 +119,14 @@ define((require) => {
     const pInput = create('input')
             .addClass('form-control')
             .setAttr('type','text'),
+          pLabel = create('label', textElm)
+            .addClass('form-control')
+            .addClass('col')
+            .addClass('xs-4')
+            .text('booklog userId:'),
           pForm = create('form')
             .addClass('col')
+            .addClass('xs-8')
             .append(pInput)
             .on(
               'submit',
@@ -115,7 +140,7 @@ define((require) => {
                   }
                 }, Promise.resolve());
               });
-    const pArea = row(pForm);
+    const pArea = row([pLabel, pForm]);
     function genParts() {
       return [
          pArea,

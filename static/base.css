@@ -5,3 +5,10 @@ body {
 body.smartphone {
   font-size: xx-large;
 }
+
+/* bluesky.css 調整*/
+.btn {
+  min-width: 100px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
