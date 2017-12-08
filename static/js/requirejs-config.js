@@ -3,7 +3,14 @@
 /*eslint no-console: off */
 /*global require */
 
-require.config({
+(function (config) {
+  if (typeof require === 'undefined') {
+    require = config; //eslint-disable-line no-global-assign, no-native-reassign
+  } else {
+    require.config(config);
+  }
+
+}({
   paths: {
     'maquette': ['/lib/maquette/maquette.min',],
     'quagga': ['../lib/quagga/quagga.min',],
@@ -30,4 +37,4 @@ require.config({
 
   }
 
-});
+}));
