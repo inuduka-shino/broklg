@@ -44,14 +44,14 @@ define((require) => {
         },
         pTitle = create('h2', textElm).text('Broklg search');
 
-const
+  const
         pMessage = create('span',textElm).text('...'),
         pAreaMsg = genBar(pMessage),
         message = ui.message = (msg) => {
           pMessage.text(msg);
         };
 
-const
+  const
         pButton = create('button',textElm)
                       .addClass('btn')
                       .addClass('btn-empty')
@@ -120,14 +120,18 @@ const
             .addClass('form-control')
             .setAttr('type','text'),
           pLabel = create('label', textElm)
-            .addClass('form-control')
-            .addClass('col')
-            .addClass('xs-4')
+            // .addClass('big')
             .text('booklog userId:'),
+          pSubmitButton = create('button')
+            .addClass('btn')
+            .setAttr('type', 'submit')
+            .append(
+              create('span',textElm)
+              .addClass('small')
+              .text('登録')
+            ),
           pForm = create('form')
-            .addClass('col')
-            .addClass('xs-8')
-            .append(pInput)
+            .append([pLabel,pInput, pSubmitButton])
             .on(
               'submit',
               (event)=>{
@@ -140,7 +144,7 @@ const
                   }
                 }, Promise.resolve());
               });
-    const pArea = row([pLabel, pForm]);
+    const pArea = genBar([pForm]);
     function genParts() {
       return [
          pArea,
@@ -196,6 +200,7 @@ const
   });
 
   function start(handler) {
+    message('start!');
     return loaded.then(async ()=>{
       await handler(ui);
     });

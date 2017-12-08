@@ -47,7 +47,7 @@ define((require)=>{
         });
       });
       ui.onClickButtonClear(()=>{
-        message('--');
+        message('----');
       });
       ui.onInputEnvButton(()=>{
         message('click inputEvent button');
