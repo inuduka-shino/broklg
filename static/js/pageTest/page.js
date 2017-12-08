@@ -2,14 +2,18 @@
 /*eslint no-console: off */
 /*global define */
 
-define((require) => {
+define([
+  'domUtil',
+  './main',
+],
+(domUtil, main) => {
   const {
           checkLoadedDocument,
           body,
           deviceType,
           create,
 
-        } = require('domUtil');
+        } =domUtil;
 
     const ui = {};
 
@@ -197,15 +201,8 @@ define((require) => {
     ui.onSubmitEnvInputArea = envInputArea.onSubmit;
 
     return Promise.resolve();
+  }).then(() => {
+    main(ui);
   });
 
-  function start(handler) {
-    message('start!');
-    return loaded.then(async ()=>{
-      await handler(ui);
-    });
-  }
-  return {
-    start,
-  };
 });

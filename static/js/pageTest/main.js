@@ -3,61 +3,51 @@
 /*eslint no-console: off */
 /*global define */
 
-define((require)=>{
-  const
-        booklog = require('../booklog'),
-        {
-          generate: genSaver,
-        } = require('../clientSaver'),
-        page = require('./page');
-  const saver = genSaver();
-  //saver.saveSetting('environ', {
-  //  userid: 'xxxxxxxx',
-  //});
+define([
+    '../booklog',
+    '../clientSaver',
+  ], (
+    booklog,
+    clientSaver
+  ) => {
 
-  const envPrms = saver.loadSetting('environ').then((env)=>{
-    return {
-      userid: env.userid,
-    };
-  });
-  const pagePrms = new Promise((resolve, reject)=>{
-    page.start((ui)=>{
-      try {
-        resolve(ui);
-      } catch (err) {
-        reject(err);
-      }
-    });
-  });
+    return (ui)=>{
+      const saver = clientSaver.generate();
 
-  Promise.all([envPrms, pagePrms])
-    .then(([env, ui])=>{
-      const message = ui.message;
-      if (ui.mobile) {
-        message('Mobile Start!');
-      } else {
-        message('ready.');
-      }
-      ui.onClickButtonA(()=>{
-        return booklog.getBookshelf(env.userid).then((data)=>{
-          message(`${data.tana.name}を取得しました。`);
-        }).catch((err)=>{
-          message('jsonp call ERROR!');
-          throw err;
+      saver.loadSetting('environ').then((env)=>{
+        return {
+          userid: env.userid,
+        };
+      }).then((env)=>{
+          const message = ui.message;
+          if (ui.mobile) {
+            message('Mobile Start!');
+          } else {
+            message('ready.');
+          }
+          ui.onClickButtonA(()=>{
+            return booklog.getBookshelf(env.userid).then((data)=>{
+              message(`${data.tana.name}を取得しました。`);
+            }).catch((err)=>{
+              message('jsonp call ERROR!');
+              throw err;
+            });
+          });
+          ui.onClickButtonClear(()=>{
+            message('----');
+          });
+          ui.onInputEnvButton(()=>{
+            message('click inputEvent button');
+          });
+          ui.onSubmitEnvInputArea((val)=>{
+            message(`submit input area:${val}`);
+            env.userid = val;
+          });
         });
-      });
-      ui.onClickButtonClear(()=>{
-        message('----');
-      });
-      ui.onInputEnvButton(()=>{
-        message('click inputEvent button');
-      });
-      ui.onSubmitEnvInputArea((val)=>{
-        message(`submit input area:${val}`);
-        env.userid = val;
-      });
-    });
-});
+
+    }; // end of return function
+  }
+); // end of define
 
 /*
   function clickHandle() {
