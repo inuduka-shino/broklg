@@ -14,6 +14,7 @@ define((require)=>{
   //  userid: 'xxxxxxxx',
   //});
   return (ui)=> {
+
     const envPrms = saver.loadSetting('environ').then((env)=>{
         return {
           userid: env.userid,
@@ -42,12 +43,19 @@ define((require)=>{
       ui.onClickButtonClear(()=>{
         message('----');
       });
+
+      /*
       ui.onInputEnvButton(()=>{
         message('click inputEvent button');
       });
-      ui.onSubmitEnvInputArea((val)=>{
-        message(`submit input area:${val}`);
-        env.userid = val;
+      */
+      ui.loadedInputEnv.then(({
+        onSubmit,
+      })=>{
+          onSubmit((val)=>{
+            message(`submit input area:${val}`);
+            env.userid = val;
+          });
       });
     });
   };

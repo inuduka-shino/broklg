@@ -3,7 +3,7 @@
 /*global define,require */
 
 define([
-    '/lib/common/behaveOfButton.js',
+    './behaveOfButton',
   ],(
     behaveOfButton
   ) => {
@@ -27,30 +27,41 @@ define([
         errorLabel: 'ERROR!',
       }).regHandle;
 
-      ui.onInputEnvButton = behaveOfButton({
+
+      const onInputEnvButton = behaveOfButton({
         pButton: parts.pInputEnvButton,
         workingLabel: 'opened!',
         errorLabel: 'ERROR!',
       }).regHandle;
 
-      // delay load parts
-      new Promise((resolve, reject) => {
+      ui.loadedInputEnv = new Promise((resolve, reject) => {
         try {
           //eslint-disable-next-line global-require
           require(['envInputArea'], (envInputArea)=>{
-            parts.body.append(envInputArea.genParts());
-            ui.onSubmitEnvInputArea = envInputArea.onSubmit;
-            resolve();
+            resolve(envInputArea);
           });
         } catch (err) {
           reject(err);
         }
-      }).then(()=>{
-        message('gui function stat.');
-        //eslint-disable-next-line global-require
-        require(['main'], (main)=>{
-          main(ui);
+      }).then((envInputArea)=>{
+        console.log('envInputArea Firest HIDE');
+        parts.body.append(envInputArea.genParts());
+        onInputEnvButton(()=>{
+          console.log('envInputArea SHOW');
         });
+        envInputArea.onSubmit(()=>{
+          console.log('envInputArea HIDE');
+        });
+        return {
+          onSubmit: envInputArea.onSubmit,
+        };
+      });
+
+      // delay load parts
+      message('gui function stat.');
+      //eslint-disable-next-line global-require
+      require(['main'], (main)=>{
+        main(ui);
       });
 
     }; // end of retrun functio

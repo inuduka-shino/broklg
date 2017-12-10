@@ -26,14 +26,17 @@ define([
         pButton = parts.pButton = create('button')
                       .addClass('btn')
                       .addClass('btn-empty')
+                      .addClass('btn-light')
                       .text('start'),
         pClearButton = parts.pClearButton = create('button')
                       .addClass('btn')
                       .addClass('btn-empty')
+                      .addClass('btn-light')
                       .text('clear'),
         pInputEnvButton = parts.pInputEnvButton = create('button')
                       .addClass('btn')
                       .addClass('btn-empty')
+                      .addClass('btn-light')
                       .text('input Env'),
         pAreaPlay = genBar(
           [
