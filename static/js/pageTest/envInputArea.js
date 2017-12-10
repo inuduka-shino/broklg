@@ -43,6 +43,12 @@ define([
               }, Promise.resolve());
             });
   const pArea = genBar([pForm]);
+  function hide() {
+    pArea.addClass('hide');
+  }
+  function show() {
+    pArea.removeClass('hide');
+  }
   function genParts() {
     return [
        pArea,
@@ -55,5 +61,7 @@ define([
   return {
     genParts,
     onSubmit,
+    hide,
+    show,
   };
 });

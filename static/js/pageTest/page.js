@@ -14,25 +14,25 @@ define([
         parts.pMessage.text(msg);
       };
 
-      // 1lien buttons
-      ui.onClickButtonA = behaveOfButton({
+      // first line buttons
+      ui.bhvSearchButton = behaveOfButton({
         pButton: parts.pButton, //eslint-disable-line object-shorthand
         workingLabel: 'working...',
         errorLabel: 'ERROR!',
-      }).regHandle;
+      });
 
-      ui.onClickButtonClear = behaveOfButton({
+      ui.bhvClearButton = behaveOfButton({
         pButton: parts.pClearButton,
         workingLabel: '...',
         errorLabel: 'ERROR!',
-      }).regHandle;
+      });
 
 
-      const onInputEnvButton = behaveOfButton({
+      ui.bhvOpenEnvInputButton = behaveOfButton({
         pButton: parts.pInputEnvButton,
         workingLabel: 'opened!',
         errorLabel: 'ERROR!',
-      }).regHandle;
+      });
 
       ui.loadedInputEnv = new Promise((resolve, reject) => {
         try {
@@ -41,20 +41,13 @@ define([
             resolve(envInputArea);
           });
         } catch (err) {
+          console.log('can not load nevInputArea.js !');
           reject(err);
         }
       }).then((envInputArea)=>{
-        console.log('envInputArea Firest HIDE');
+        envInputArea.hide();
         parts.body.append(envInputArea.genParts());
-        onInputEnvButton(()=>{
-          console.log('envInputArea SHOW');
-        });
-        envInputArea.onSubmit(()=>{
-          console.log('envInputArea HIDE');
-        });
-        return {
-          onSubmit: envInputArea.onSubmit,
-        };
+        return envInputArea;
       });
 
       // delay load parts

@@ -14,49 +14,57 @@ define((require)=>{
   //  userid: 'xxxxxxxx',
   //});
   return (ui)=> {
+    const environ = {};
+
+    const message = ui.message;
+
+    ui.bhvClearButton.active();
+    ui.bhvClearButton.regHandle(()=>{
+      message('----');
+    });
+
+    ui.bhvSearchButton.regHandle(()=>{
+      return booklog.getBookshelf(environ.userid).then((data)=>{
+        message(`${data.tana.name}(${environ.userid})を取得しました。`);
+      }).catch((err)=>{
+        message(`${environ.userid}の取得に失敗しました。。`);
+        throw err;
+      });
+    });
+
+    ui.loadedInputEnv.then((envInputArea)=>{
+      envInputArea.onSubmit((val)=>{
+        envInputArea.hide();
+        message(`submit input area:${val}`);
+        environ.userid = val;
+      });
+      ui.bhvOpenEnvInputButton.active();
+      ui.bhvOpenEnvInputButton.regHandle(()=>{
+        envInputArea.show();
+      });
+    });
 
     const envPrms = saver.loadSetting('environ').then((env)=>{
-        return {
-          userid: env.userid,
-        };
+        environ.userid = env.userid;
       }).catch(()=>{
-        return {
-          userid: 'xxxxxx',
-        };
+        environ.userid = 'xxxxxx';
       });
 
-    envPrms.then((env)=>{
-      const message = ui.message;
+    envPrms.then(()=>{
       if (ui.mobile) {
         message('Mobile Start!');
       } else {
         message('ready.');
       }
-      ui.onClickButtonA(()=>{
-        return booklog.getBookshelf(env.userid).then((data)=>{
-          message(`${data.tana.name}(${env.userid})を取得しました。`);
-        }).catch((err)=>{
-          message(`${env.userid}の取得に失敗しました。。`);
-          throw err;
-        });
-      });
-      ui.onClickButtonClear(()=>{
-        message('----');
-      });
+
+      ui.bhvSearchButton.active();
+
 
       /*
       ui.onInputEnvButton(()=>{
         message('click inputEvent button');
       });
       */
-      ui.loadedInputEnv.then(({
-        onSubmit,
-      })=>{
-          onSubmit((val)=>{
-            message(`submit input area:${val}`);
-            env.userid = val;
-          });
-      });
     });
   };
 
