@@ -20,6 +20,7 @@ define((require)=>{
     ui.bhvClearButton.active();
     ui.bhvClearButton.regHandle(()=>{
       message('----');
+      ui.bhvSearchButton.reset();
     });
 
     ui.bhvSearchButton.regHandle(()=>{
@@ -33,9 +34,10 @@ define((require)=>{
 
     ui.loadedInputEnv.then((envInputArea)=>{
       envInputArea.onSubmit((val)=>{
-        envInputArea.hide();
+        ui.bhvSearchButton.reset();
         message(`submit input area:${val}`);
         environ.userid = val;
+        envInputArea.hide();
       });
       ui.bhvOpenEnvInputButton.active();
       ui.bhvOpenEnvInputButton.regHandle(()=>{

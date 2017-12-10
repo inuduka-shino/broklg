@@ -41,6 +41,7 @@ define(()=>{
         console.log(err);
         stat = 'ERROR';
         pButton.text(errorLabel);
+        pButton.removeClass('btn-light');
         pButton.addClass('btn-error');
       });
     });
@@ -58,10 +59,24 @@ define(()=>{
     }
     function active() {
       activeStat = true;
-      pButton.removeClass('btn-light');
+      if (stat === 'release') {
+        pButton.removeClass('btn-light');
+        pButton.removeClass('btn-error');
+        return;
+      }
+      if (stat === 'push') {
+        pButton.addClass('btn-light');
+        pButton.removeClass('btn-error');
+        return;
+      }
+      if (stat === 'error') {
+        pButton.removeClass('btn-light');
+        pButton.addClass('btn-error');
+      }
     }
     function deactive() {
       activeStat = false;
+      pButton.removeClass('btn-error');
       pButton.addClass('btn-light');
     }
     return {
