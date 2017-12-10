@@ -11,13 +11,16 @@ define(()=>{
                   errorLabel,
               }) {
     let stat = 'release'; // push error
+    let activeStat = false;
+
     const label = pButton.getText();
     const handles = [];
 
     pButton.on('click',() =>{
-      if (stat !== 'release') {
+      if (activeStat === false || stat !== 'release') {
         return;
       }
+
       stat = 'push';
       pButton.text(workingLabel);
       pButton.addClass('btn-light');
@@ -42,12 +45,30 @@ define(()=>{
       });
     });
     function regHandle(handle) {
-      pButton.removeClass('btn-light');
       handles.push(handle);
     }
-
+    function reset() {
+      pButton.text(label);
+      if (stat === 'ERROR') {
+        pButton.removeClass('btn-error');
+      } else {
+        pButton.removeClass('btn-light');
+      }
+      stat = 'release';
+    }
+    function active() {
+      activeStat = true;
+      pButton.removeClass('btn-light');
+    }
+    function deactive() {
+      activeStat = false;
+      pButton.addClass('btn-light');
+    }
     return {
       regHandle,
+      reset,
+      active,
+      deactive,
     };
   };
 });

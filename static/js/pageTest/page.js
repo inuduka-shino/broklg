@@ -3,7 +3,7 @@
 /*global define,require */
 
 define([
-    './behaveOfButton',
+    '../behaveOfButton',
   ],(
     behaveOfButton
   ) => {
