@@ -5,3 +5,23 @@ body {
 body.smartphone {
   font-size: xx-large;
 }
+
+/* bluesky.css 調整*/
+.row {
+  margin-bottom: 2px;
+}
+.btn {
+  min-width: 100px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 4px;
+}
+
+form label {
+  display: inline;
+  margin-right: 5px;
+}
+
+form input[type="text"].form-control {
+  width: 60%;
+}

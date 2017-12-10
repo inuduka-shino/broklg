@@ -1,18 +1,22 @@
 /*eslint-env browser */
 /*eslint no-console: off */
-/*global define */
+/*global define,require */
 
-define((require) => {
+define([
+  'domUtil',
+],
+(domUtil) => {
   const {
           checkLoadedDocument,
           body,
           deviceType,
           create,
 
-        } = require('domUtil');
+        } =domUtil;
 
     const ui = {};
 
+  /*
   function row(children) {
     const parent = create('div').addClass('row');
     parent.append(children);
@@ -21,12 +25,38 @@ define((require) => {
   function col(child, colSize) {
     return create('div').addClass('col').addClass(colSize).append(child);
   }
+  function respSelf(val) {
+    return ()=>{
+      return val;
+    };
+  }
+  */
+  function genBar(children=null) {
+    const pOuter = create('div').addClass('row'),
+          pInner = create('div').addClass('col');
+    pOuter.append(pInner);
+    if (children !== null) {
+      pInner.append(children);
+    }
+    pOuter.directAppend = pOuter.append;
+    pOuter.append = pInner.append;
+    pOuter.inner = pInner;
+
+    return pOuter;
+  }
   const textElm = {
           text: true,
         },
-        pTitle = create('h2', textElm).text('Broklg search'),
-        pMessage = create('div',textElm).addClass('col').text('...'),
-        pAreaMsg = row(pMessage),
+        pTitle = create('h2', textElm).text('Broklg search');
+
+  const
+        pMessage = create('span',textElm).text('...'),
+        pAreaMsg = genBar(pMessage),
+        message = ui.message = (msg) => {
+          pMessage.text(msg);
+        };
+
+  const
         pButton = create('button',textElm)
                       .addClass('btn')
                       .addClass('btn-empty')
@@ -35,13 +65,16 @@ define((require) => {
                       .addClass('btn')
                       .addClass('btn-empty')
                       .text('clear'),
-        pColButton = col(pButton,'xs-2'),
-        pAreaPlay = row([pColButton, col(pClearButton,'xs-2')]);
-
-
-  const message = ui.message = (msg) => {
-    pMessage.text(msg);
-  };
+        pInputEnvButton = create('button',textElm)
+                      .addClass('btn')
+                      .addClass('btn-empty')
+                      .text('input Env'),
+        pAreaPlay = genBar(
+          [
+            pButton,
+            pInputEnvButton,
+            pClearButton,
+          ]);
 
   function behaveOfButton({
                   pButton,
@@ -86,6 +119,52 @@ define((require) => {
     };
   }
 
+  const envInputArea = (()=>{
+    const handlers=[];
+    const pInput = create('input')
+            .addClass('form-control')
+            .setAttr('type','text'),
+          pLabel = create('label', textElm)
+            // .addClass('big')
+            .text('booklog userId:'),
+          pSubmitButton = create('button')
+            .addClass('btn')
+            .setAttr('type', 'submit')
+            .append(
+              create('span',textElm)
+              .addClass('small')
+              .text('登録')
+            ),
+          pForm = create('form')
+            .append([pLabel,pInput, pSubmitButton])
+            .on(
+              'submit',
+              (event)=>{
+                event.preventDefault();
+                handlers.reduce((prevObj, func)=>{
+                  try {
+                    return prevObj.then(func.bind(null,pInput.val()));
+                  } catch (err) {
+                    return Promise.reject(err);
+                  }
+                }, Promise.resolve());
+              });
+    const pArea = genBar([pForm]);
+    function genParts() {
+      return [
+         pArea,
+        //row(col(create('div',textElm).text('AAA'))),
+      ];
+    }
+    function onSubmit(func) {
+      handlers.push(func);
+    }
+    return {
+      genParts,
+      onSubmit,
+    };
+  })();
+
   const loaded = checkLoadedDocument().then(() => {
     const pBody = body();
     pBody.clear();
@@ -100,7 +179,8 @@ define((require) => {
       pAreaMsg,
       pAreaPlay,
     ]);
-  }).then(()=>{
+    return pBody;
+  }).then((pBody)=>{
     // ------
     ui.onClickButtonA = behaveOfButton({
       pButton: pButton, //eslint-disable-line object-shorthand
@@ -109,18 +189,25 @@ define((require) => {
     }).regHandle;
     ui.onClickButtonClear = behaveOfButton({
       pButton: pClearButton, //eslint-disable-line object-shorthand
-      workingLabel: 'working...',
+      workingLabel: '...',
       errorLabel: 'ERROR!',
     }).regHandle;
+
+    pBody.append(envInputArea.genParts());
+    ui.onInputEnvButton = behaveOfButton({
+      pButton: pInputEnvButton,
+      workingLabel: 'opened!',
+      errorLabel: 'ERROR!',
+    }).regHandle;
+    ui.onSubmitEnvInputArea = envInputArea.onSubmit;
+
     return Promise.resolve();
+  }).then(() => {
+    //eslint-disable-next-line global-require
+    require(['main'], (main)=>{
+      main(ui);
+    });
   });
 
-  function start(handler) {
-    return loaded.then(async ()=>{
-      await handler(ui);
-    });
-  }
-  return {
-    start,
-  };
+  return loaded;
 });
