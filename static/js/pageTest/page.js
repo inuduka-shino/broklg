@@ -1,12 +1,11 @@
 /*eslint-env browser */
 /*eslint no-console: off */
-/*global define */
+/*global define,require */
 
 define([
   'domUtil',
-  './main',
 ],
-(domUtil, main) => {
+(domUtil) => {
   const {
           checkLoadedDocument,
           body,
@@ -17,6 +16,7 @@ define([
 
     const ui = {};
 
+  /*
   function row(children) {
     const parent = create('div').addClass('row');
     parent.append(children);
@@ -30,6 +30,7 @@ define([
       return val;
     };
   }
+  */
   function genBar(children=null) {
     const pOuter = create('div').addClass('row'),
           pInner = create('div').addClass('col');
@@ -202,7 +203,11 @@ define([
 
     return Promise.resolve();
   }).then(() => {
-    main(ui);
+    //eslint-disable-next-line global-require
+    require(['main'], (main)=>{
+      main(ui);
+    });
   });
 
+  return loaded;
 });

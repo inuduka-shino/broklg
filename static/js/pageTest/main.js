@@ -14,11 +14,15 @@ define([
     return (ui)=>{
       const saver = clientSaver.generate();
 
-      saver.loadSetting('environ').then((env)=>{
-        return {
-          userid: env.userid,
-        };
-      }).then((env)=>{
+      saver.loadSetting('environ').then((env) => {
+          return {
+            userid: env.userid,
+          };
+        }).catch(() => {
+          return {
+            userid: 'xxxxxx',
+          };
+        }).then((env)=>{
           const message = ui.message;
           if (ui.mobile) {
             message('Mobile Start!');
