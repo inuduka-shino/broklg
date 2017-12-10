@@ -49,6 +49,9 @@ define([
   function show() {
     pArea.removeClass('hide');
   }
+  function toggle() {
+    pArea.toggleClass('hide');
+  }
   function genParts() {
     return [
        pArea,
@@ -63,5 +66,6 @@ define([
     onSubmit,
     hide,
     show,
+    toggle,
   };
 });

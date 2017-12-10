@@ -15,7 +15,6 @@ define((require)=>{
   //});
   return (ui)=> {
     const environ = {};
-
     const message = ui.message;
 
     ui.bhvClearButton.active();
@@ -40,15 +39,15 @@ define((require)=>{
       });
       ui.bhvOpenEnvInputButton.active();
       ui.bhvOpenEnvInputButton.regHandle(()=>{
-        envInputArea.show();
+        envInputArea.toggle();
       });
     });
 
-    const envPrms = saver.loadSetting('environ').then((env)=>{
-        environ.userid = env.userid;
-      }).catch(()=>{
-        environ.userid = 'xxxxxx';
-      });
+  const envPrms = saver.loadSetting('environ').then((env)=>{
+      environ.userid = env.userid;
+    }).catch(()=>{
+      environ.userid = 'xxxxxx';
+    });
 
     envPrms.then(()=>{
       if (ui.mobile) {
@@ -58,18 +57,16 @@ define((require)=>{
       }
 
       ui.bhvSearchButton.active();
+    });
+  };
 
+});
 
       /*
       ui.onInputEnvButton(()=>{
         message('click inputEvent button');
       });
       */
-    });
-  };
-
-});
-
 /*
   function clickHandle() {
     message('click button');
