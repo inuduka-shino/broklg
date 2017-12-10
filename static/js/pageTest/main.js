@@ -3,55 +3,56 @@
 /*eslint no-console: off */
 /*global define */
 
-define([
-    '../booklog',
-    '../clientSaver',
-  ], (
-    booklog,
-    clientSaver
-  ) => {
+define((require)=>{
+  const
+        booklog = require('../booklog'),
+        {
+          generate: genSaver,
+        } = require('../clientSaver');
+  const saver = genSaver();
+  //saver.saveSetting('environ', {
+  //  userid: 'xxxxxxxx',
+  //});
+  return (ui)=> {
+    const envPrms = saver.loadSetting('environ').then((env)=>{
+        return {
+          userid: env.userid,
+        };
+      }).catch(()=>{
+        return {
+          userid: 'xxxxxx',
+        };
+      });
 
-    return (ui)=>{
-      const saver = clientSaver.generate();
-
-      saver.loadSetting('environ').then((env) => {
-          return {
-            userid: env.userid,
-          };
-        }).catch(() => {
-          return {
-            userid: 'xxxxxx',
-          };
-        }).then((env)=>{
-          const message = ui.message;
-          if (ui.mobile) {
-            message('Mobile Start!');
-          } else {
-            message('ready.');
-          }
-          ui.onClickButtonA(()=>{
-            return booklog.getBookshelf(env.userid).then((data)=>{
-              message(`${data.tana.name}を取得しました。`);
-            }).catch((err)=>{
-              message('jsonp call ERROR!');
-              throw err;
-            });
-          });
-          ui.onClickButtonClear(()=>{
-            message('----');
-          });
-          ui.onInputEnvButton(()=>{
-            message('click inputEvent button');
-          });
-          ui.onSubmitEnvInputArea((val)=>{
-            message(`submit input area:${val}`);
-            env.userid = val;
-          });
+    envPrms.then((env)=>{
+      const message = ui.message;
+      if (ui.mobile) {
+        message('Mobile Start!');
+      } else {
+        message('ready.');
+      }
+      ui.onClickButtonA(()=>{
+        return booklog.getBookshelf(env.userid).then((data)=>{
+          message(`${data.tana.name}を取得しました。`);
+        }).catch((err)=>{
+          message('jsonp call ERROR!');
+          throw err;
         });
+      });
+      ui.onClickButtonClear(()=>{
+        message('----');
+      });
+      ui.onInputEnvButton(()=>{
+        message('click inputEvent button');
+      });
+      ui.onSubmitEnvInputArea((val)=>{
+        message(`submit input area:${val}`);
+        env.userid = val;
+      });
+    });
+  };
 
-    }; // end of return function
-  }
-); // end of define
+});
 
 /*
   function clickHandle() {
