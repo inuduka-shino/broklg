@@ -34,9 +34,9 @@ define((require)=>{
       }
       ui.onClickButtonA(()=>{
         return booklog.getBookshelf(env.userid).then((data)=>{
-          message(`${data.tana.name}を取得しました。`);
+          message(`${data.tana.name}(${env.userid})を取得しました。`);
         }).catch((err)=>{
-          message('jsonp call ERROR!');
+          message(`${env.userid}の取得に失敗しました。。`);
           throw err;
         });
       });
