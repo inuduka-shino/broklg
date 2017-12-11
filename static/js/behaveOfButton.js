@@ -16,6 +16,19 @@ define(()=>{
     const label = pButton.getText();
     const handles = [];
 
+    function error(deactiveFlag=false) {
+      // error状態にする。
+      stat = 'ERROR';
+      if (deactiveFlag) {
+        pButton.addClass('btn-light');
+        pButton.removeClass('btn-error');
+      } else {
+        pButton.text(errorLabel);
+        pButton.removeClass('btn-light');
+        pButton.addClass('btn-error');
+      }
+    }
+
     pButton.on('click',() =>{
       if (activeStat === false || stat !== 'release') {
         return;
@@ -39,10 +52,7 @@ define(()=>{
         // message(err);
         console.log('Error on ClickHandle');
         console.log(err);
-        stat = 'ERROR';
-        pButton.text(errorLabel);
-        pButton.removeClass('btn-light');
-        pButton.addClass('btn-error');
+        error();
       });
     });
     function regHandle(handle) {
@@ -50,11 +60,8 @@ define(()=>{
     }
     function reset() {
       pButton.text(label);
-      if (stat === 'ERROR') {
-        pButton.removeClass('btn-error');
-      } else {
-        pButton.removeClass('btn-light');
-      }
+      pButton.removeClass('btn-error');
+      pButton.removeClass('btn-light');
       stat = 'release';
     }
     function active() {
@@ -82,6 +89,8 @@ define(()=>{
     return {
       regHandle,
       reset,
+      error,
+
       active,
       deactive,
     };

@@ -17,6 +17,7 @@ define((require)=>{
     const environ = {};
     const message = ui.message;
 
+
     ui.bhvClearButton.active();
     ui.bhvClearButton.regHandle(()=>{
       message('----');
@@ -34,9 +35,19 @@ define((require)=>{
 
     ui.loadedInputEnv.then((envInputArea)=>{
       envInputArea.onSubmit((val)=>{
-        ui.bhvSearchButton.reset();
-        message(`submit input area:${val}`);
-        environ.userid = val;
+        if (val === '') {
+          if (environ.userid===null) {
+            envInputArea.hide();
+          } else {
+            envInputArea.setVal(environ.userid);
+          }
+          return;
+        }
+        if (environ.userid !== val) {
+          ui.bhvSearchButton.reset();
+          message(`submit input area:${val}`);
+          environ.userid = val;
+        }
         envInputArea.hide();
       });
       ui.bhvOpenEnvInputButton.active();
@@ -45,23 +56,30 @@ define((require)=>{
       });
     });
 
-  const envPrms = saver.loadSetting('environ').then((env)=>{
-      environ.userid = env.userid;
-    }).catch(()=>{
-      environ.userid = 'xxxxxx';
-    });
+    const envPrms = saver.loadSetting('environ')
+      .then((env)=>{
+        if (env === null) {
+          environ.userid = null;
+        } else {
+          environ.userid = env.userid;
+        }
+      });
 
     envPrms.then(()=>{
+      ui.bhvSearchButton.active();
+
       if (ui.mobile) {
         message('Mobile Start!');
       } else {
         message('ready.');
       }
-
-      ui.bhvSearchButton.active();
+      if (environ.userid === null) {
+        ui.bhvSearchButton.error(true);
+        message('useridが登録されていません。');
+      }
     });
-  };
 
+  };
 });
 
       /*
