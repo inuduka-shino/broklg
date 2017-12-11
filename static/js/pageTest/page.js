@@ -3,7 +3,7 @@
 /*global define,require */
 
 define([
-    '/lib/common/behaveOfButton.js',
+    '../behaveOfButton',
   ],(
     behaveOfButton
   ) => {
@@ -14,43 +14,47 @@ define([
         parts.pMessage.text(msg);
       };
 
-      // 1lien buttons
-      ui.onClickButtonA = behaveOfButton({
+      // first line buttons
+      ui.bhvSearchButton = behaveOfButton({
         pButton: parts.pButton, //eslint-disable-line object-shorthand
         workingLabel: 'working...',
         errorLabel: 'ERROR!',
-      }).regHandle;
+      });
 
-      ui.onClickButtonClear = behaveOfButton({
+      ui.bhvClearButton = behaveOfButton({
         pButton: parts.pClearButton,
         workingLabel: '...',
         errorLabel: 'ERROR!',
-      }).regHandle;
+      });
 
-      ui.onInputEnvButton = behaveOfButton({
+
+      ui.bhvOpenEnvInputButton = behaveOfButton({
         pButton: parts.pInputEnvButton,
         workingLabel: 'opened!',
         errorLabel: 'ERROR!',
-      }).regHandle;
+      });
 
-      // delay load parts
-      new Promise((resolve, reject) => {
+      ui.loadedInputEnv = new Promise((resolve, reject) => {
         try {
           //eslint-disable-next-line global-require
           require(['envInputArea'], (envInputArea)=>{
-            parts.body.append(envInputArea.genParts());
-            ui.onSubmitEnvInputArea = envInputArea.onSubmit;
-            resolve();
+            resolve(envInputArea);
           });
         } catch (err) {
+          console.log('can not load nevInputArea.js !');
           reject(err);
         }
-      }).then(()=>{
-        message('gui function stat.');
-        //eslint-disable-next-line global-require
-        require(['main'], (main)=>{
-          main(ui);
-        });
+      }).then((envInputArea)=>{
+        envInputArea.hide();
+        parts.body.append(envInputArea.genParts());
+        return envInputArea;
+      });
+
+      // delay load parts
+      message('gui function stat.');
+      //eslint-disable-next-line global-require
+      require(['main'], (main)=>{
+        main(ui);
       });
 
     }; // end of retrun functio

@@ -14,46 +14,61 @@ define((require)=>{
   //  userid: 'xxxxxxxx',
   //});
   return (ui)=> {
-    const envPrms = saver.loadSetting('environ').then((env)=>{
-        return {
-          userid: env.userid,
-        };
-      }).catch(()=>{
-        return {
-          userid: 'xxxxxx',
-        };
-      });
+    const environ = {};
+    const message = ui.message;
 
-    envPrms.then((env)=>{
-      const message = ui.message;
+    ui.bhvClearButton.active();
+    ui.bhvClearButton.regHandle(()=>{
+      message('----');
+      ui.bhvSearchButton.reset();
+    });
+
+    ui.bhvSearchButton.regHandle(()=>{
+      return booklog.getBookshelf(environ.userid).then((data)=>{
+        message(`${data.tana.name}(${environ.userid})を取得しました。`);
+      }).catch((err)=>{
+        message(`${environ.userid}の取得に失敗しました。。`);
+        throw err;
+      });
+    });
+
+    ui.loadedInputEnv.then((envInputArea)=>{
+      envInputArea.onSubmit((val)=>{
+        ui.bhvSearchButton.reset();
+        message(`submit input area:${val}`);
+        environ.userid = val;
+        envInputArea.hide();
+      });
+      ui.bhvOpenEnvInputButton.active();
+      ui.bhvOpenEnvInputButton.regHandle(()=>{
+        envInputArea.toggle();
+      });
+    });
+
+  const envPrms = saver.loadSetting('environ').then((env)=>{
+      environ.userid = env.userid;
+    }).catch(()=>{
+      environ.userid = 'xxxxxx';
+    });
+
+    envPrms.then(()=>{
       if (ui.mobile) {
         message('Mobile Start!');
       } else {
         message('ready.');
       }
-      ui.onClickButtonA(()=>{
-        return booklog.getBookshelf(env.userid).then((data)=>{
-          message(`${data.tana.name}を取得しました。`);
-        }).catch((err)=>{
-          message('jsonp call ERROR!');
-          throw err;
-        });
-      });
-      ui.onClickButtonClear(()=>{
-        message('----');
-      });
-      ui.onInputEnvButton(()=>{
-        message('click inputEvent button');
-      });
-      ui.onSubmitEnvInputArea((val)=>{
-        message(`submit input area:${val}`);
-        env.userid = val;
-      });
+
+      ui.bhvSearchButton.active();
     });
   };
 
 });
 
+      /*
+      ui.onInputEnvButton(()=>{
+        message('click inputEvent button');
+      });
+      */
 /*
   function clickHandle() {
     message('click button');
