@@ -9,12 +9,51 @@ define((require)=>{
         {
           generate: genSaver,
         } = require('../clientSaver');
-  const saver = genSaver();
   //saver.saveSetting('environ', {
   //  userid: 'xxxxxxxx',
   //});
   return (ui)=> {
-    const environ = {};
+    const {
+        environ,
+        loadEnv,
+        saveEnv,
+    } = (()=>{
+      const environ ={};
+      const saver = genSaver();
+      let saveObj = null;
+
+      function loadEnv() {
+        return saver.loadSetting('environ')
+          .then((val)=>{
+            saveObj = val;
+            if (saveObj === null) {
+              environ.userid = null;
+            } else {
+              environ.userid = saveObj.userid;
+            }
+          });
+
+      }
+      function saveEnv() {
+        let val = null;
+        if (saveObj === null) {
+          val = {};
+        } else {
+          val = saveObj;
+        }
+        val.userid = environ.userid;
+        return saver.saveSetting('environ', val);
+      }
+
+      return {
+        environ,
+        loadEnv,
+        saveEnv,
+      };
+    })();
+
+
+
     const message = ui.message;
 
 
@@ -47,6 +86,7 @@ define((require)=>{
           ui.bhvSearchButton.reset();
           message(`submit input area:${val}`);
           environ.userid = val;
+          saveEnv();
         }
         envInputArea.hide();
       });
@@ -56,16 +96,8 @@ define((require)=>{
       });
     });
 
-    const envPrms = saver.loadSetting('environ')
-      .then((env)=>{
-        if (env === null) {
-          environ.userid = null;
-        } else {
-          environ.userid = env.userid;
-        }
-      });
 
-    envPrms.then(()=>{
+    loadEnv().then(()=>{
       ui.bhvSearchButton.active();
 
       if (ui.mobile) {
