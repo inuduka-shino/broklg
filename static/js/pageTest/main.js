@@ -3,15 +3,10 @@
 /*eslint no-console: off */
 /*global define */
 
-define((require)=>{
-  const
-        booklog = require('../booklog'),
-        {
-          generate: genSaver,
-        } = require('../clientSaver');
-  //saver.saveSetting('environ', {
-  //  userid: 'xxxxxxxx',
-  //});
+define(
+  ['../booklog','../clientSaver'],
+  (booklog, clientSaver)=>{
+
   return (ui)=> {
     const {
         environ,
@@ -19,7 +14,7 @@ define((require)=>{
         saveEnv,
     } = (()=>{
       const environ ={};
-      const saver = genSaver();
+      const saver = clientSaver.generate();
       let saveObj = null;
 
       function loadEnv() {
@@ -52,10 +47,7 @@ define((require)=>{
       };
     })();
 
-
-
     const message = ui.message;
-
 
     ui.bhvClearButton.active();
     ui.bhvClearButton.regHandle(()=>{

@@ -51,7 +51,7 @@ define([
       });
 
       // delay load parts
-      message('gui function stat.');
+      message('gui function start.');
       //eslint-disable-next-line global-require
       require(['main'], (main)=>{
         main(ui);
