@@ -20,8 +20,9 @@ body.smartphone {
 form label {
   display: inline;
   margin-right: 5px;
+  margin-left: 5px;
 }
 
 form input[type="text"].form-control {
-  width: 60%;
+  width: 30%;
 }

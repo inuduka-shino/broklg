@@ -7,45 +7,43 @@ define(
   ['../booklog','../clientSaver'],
   (booklog, clientSaver)=>{
 
-  return (ui)=> {
-    const {
-        environ,
-        loadEnv,
-        saveEnv,
-    } = (()=>{
-      const environ ={};
-      const saver = clientSaver.generate();
-      let saveObj = null;
+    const saver = clientSaver.generate();
 
-      function loadEnv() {
-        return saver.loadSetting('environ')
-          .then((val)=>{
-            saveObj = val;
-            if (saveObj === null) {
-              environ.userid = null;
+    function saveEnv(savedObj0, environ) {
+      let savedObj = {};
+      if (savedObj0 !== null) {
+        savedObj = savedObj0;
+      }
+      if (environ.userid === null) {
+        return Promise.resolove();
+      }
+      savedObj.userid = environ.userid;
+      savedObj.couont = environ.count;
+      return saver.saveSetting('environ', savedObj);
+    }
+    function loadEnv() {
+      return saver.loadSetting('environ')
+          .then((savedObj)=>{
+            let environ = null;
+            if (savedObj === null) {
+              environ ={
+                userid: null,
+                count: null,
+              };
             } else {
-              environ.userid = saveObj.userid;
+              environ = {
+                userid: savedObj.userid,
+                count: savedObj.couont,
+              };
             }
+            return {
+              environ,
+              saveEnv: saveEnv.bind(null, savedObj, environ),
+            };
           });
+    }
 
-      }
-      function saveEnv() {
-        let val = null;
-        if (saveObj === null) {
-          val = {};
-        } else {
-          val = saveObj;
-        }
-        val.userid = environ.userid;
-        return saver.saveSetting('environ', val);
-      }
-
-      return {
-        environ,
-        loadEnv,
-        saveEnv,
-      };
-    })();
+  return (ui)=> {
 
     const message = ui.message;
 
@@ -55,42 +53,13 @@ define(
       ui.bhvSearchButton.reset();
     });
 
-    ui.bhvSearchButton.regHandle(()=>{
-      return booklog.getBookshelf(environ.userid).then((data)=>{
-        message(`${data.tana.name}(${environ.userid})を取得しました。`);
-      }).catch((err)=>{
-        message(`${environ.userid}の取得に失敗しました。。`);
-        throw err;
-      });
-    });
+    const loadedEnv = loadEnv();
 
-    ui.loadedInputEnv.then((envInputArea)=>{
-      envInputArea.onSubmit((val)=>{
-        if (val === '') {
-          if (environ.userid===null) {
-            envInputArea.hide();
-          } else {
-            envInputArea.setVal(environ.userid);
-          }
-          return;
-        }
-        if (environ.userid !== val) {
-          ui.bhvSearchButton.reset();
-          message(`submit input area:${val}`);
-          environ.userid = val;
-          saveEnv();
-        }
-        envInputArea.hide();
-      });
-      ui.bhvOpenEnvInputButton.active();
-      ui.bhvOpenEnvInputButton.regHandle(()=>{
-        envInputArea.toggle();
-      });
-    });
-
-
-    loadEnv().then(()=>{
+    loadedEnv.then(({
+        environ,
+      })=>{
       ui.bhvSearchButton.active();
+
 
       if (ui.mobile) {
         message('Mobile Start!');
@@ -101,6 +70,71 @@ define(
         ui.bhvSearchButton.error(true);
         message('useridが登録されていません。');
       }
+
+      ui.bhvSearchButton.regHandle(()=>{
+        return booklog.getBookshelf(environ.userid).then((data)=>{
+          message(`${data.tana.name}(${environ.userid})を取得しました。`);
+        }).catch((err)=>{
+          message(`${environ.userid}の取得に失敗しました。。`);
+          throw err;
+        });
+      });
+
+    });
+
+    Promise.all([
+      ui.loadedInputEnv,
+      loadedEnv,
+    ]).then((args) => {
+      const envInputArea = args[0];
+      const {
+        environ,
+        saveEnv,
+      } = args[1];
+      envInputArea.setVal(environ);
+      envInputArea.onSubmit((valObj)=>{
+        let badInputFlag = false;
+        [
+          ['id', 'userid'],
+          ['count', 'count'],
+        ].forEach((info) => {
+          const [iaName, envName] = info;
+          if (valObj[iaName] === '') {
+            if (environ[envName] === null) {
+              envInputArea.hide();
+            } else {
+              envInputArea.setVal({
+                [iaName]: environ[envName],
+              });
+            }
+            badInputFlag = true;
+            return false;
+          }
+          return true;
+        });
+        if (badInputFlag) {
+          return;
+        }
+        let saveFlag = false;
+        if (environ.userid !== valObj.id) {
+          environ.userid = valObj.id;
+          saveFlag = true;
+        }
+        if (environ.count !== valObj.count) {
+          environ.count = valObj.count;
+          saveFlag = true;
+        }
+        if (saveFlag) {
+          ui.bhvSearchButton.reset();
+          saveEnv();
+        }
+
+        envInputArea.hide();
+      });
+      ui.bhvOpenEnvInputButton.active();
+      ui.bhvOpenEnvInputButton.regHandle(()=>{
+        envInputArea.toggle();
+      });
     });
 
   };

@@ -27,7 +27,7 @@ define([
                       .addClass('btn')
                       .addClass('btn-empty')
                       .addClass('btn-light')
-                      .text('start'),
+                      .text('booklog取得'),
         pClearButton = parts.pClearButton = create('button')
                       .addClass('btn')
                       .addClass('btn-empty')

@@ -14,12 +14,16 @@ define([
 
 
   const handlers=[];
-  const pInput = create('input')
+  const pInputId = create('input')
           .addClass('form-control')
           .setAttr('type','text'),
-        pLabel = create('label')
-          // .addClass('big')
+        pInputCount = create('input')
+                .addClass('form-control')
+                .setAttr('type','text'),
+        pLabelId = create('label')
           .text('booklog userId:'),
+        pLabelCount = create('label')
+          .text('count:'),
         pSubmitButton = create('button')
           .addClass('btn')
           .setAttr('type', 'submit')
@@ -29,22 +33,35 @@ define([
             .text('登録')
           ),
         pForm = create('form')
-          .append([pLabel,pInput, pSubmitButton])
+          .append([
+            pLabelId,pInputId,
+            pLabelCount,pInputCount,
+            pSubmitButton])
           .on(
             'submit',
             (event)=>{
               event.preventDefault();
               handlers.reduce((prevObj, func)=>{
                 try {
-                  return prevObj.then(func.bind(null,pInput.val()));
+                  return prevObj.then(
+                    func.bind(null, {
+                      id: pInputId.val(),
+                      count: pInputCount.val(),
+                    })
+                  );
                 } catch (err) {
                   return Promise.reject(err);
                 }
               }, Promise.resolve());
             });
   const pArea = genBar([pForm]);
-  function setVal(val) {
-    pInput.setVal(val);
+  function setVal(valObj) {
+    if (typeof valObj.id !== 'undefined') {
+      pInputId.setVal(valObj.id);
+    }
+    if (typeof valObj.Count !== 'undefined') {
+      pInputCount.setVal(valObj.count);
+    }
   }
   function hide() {
     pArea.addClass('hide');
