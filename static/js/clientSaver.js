@@ -7,15 +7,20 @@ define(() => {
   const
     dbName = 'broklgDB',
     tnSetting = 'setting',
-    osnNames = [tnSetting],
+    tnBooklog = 'booklog',
+    osnNames = [tnSetting, tnBooklog],
+    remakeOsnList = [],
     dbSchema = {
-      version: 2,
+      version: 3,
       schema: {
         [tnSetting]: {
           keyPath: 'keyName'
         },
+        [tnBooklog]: {
+          keyPath: 'isbn'
+        },
       } ,
-      developMode: true,
+      // developMode: true,
       createObjectStore(db, osnName) {
         console.log(`create indexedDB objectStore[${osnName}] for ver ${dbSchema.version}`);
         db.createObjectStore(
@@ -24,8 +29,8 @@ define(() => {
         );
       },
       translateObjectStore(db, osnName) {
-        // 存在が前提
-        if (dbSchema.developMode) {
+        if (remakeOsnList.includes(osnName)) {
+          // 存在が前提
           console.log(`delete indexedDB objectStore[${osnName}] for ver ${dbSchema.version}`);
           db.deleteObjectStore(osnName);
           dbSchema.createObjectStore(db, osnName);
@@ -70,17 +75,21 @@ define(() => {
     });
   }
 
-  //let theRSAKey=null;
-
-  async function save(osnName, key, value) {
+  async function save(osnName, key, value=null) {
     const db = await dbOpen(dbSchema.version);
     const tx = db.transaction(osnNames, 'readwrite'),
           store = tx.objectStore(osnName);
-    const req = store.put({
-      [dbSchema.schema[osnName].keyPath]: key,
-      value
-    });
-
+    let saveObj = null;
+    if (value === null) {
+      // aloww save(osnName, value) pattern
+      saveObj = key;
+    } else {
+      saveObj = {
+        [dbSchema.schema[osnName].keyPath]: key,
+        value
+      };
+    }
+    const req = store.put(saveObj);
     tx.oncomplite = () => {
       console.log('indexedDB save trans complite');
     };
@@ -123,6 +132,8 @@ function generate() {
     return {
       saveSetting: save.bind(null, tnSetting),
       loadSetting: load.bind(null, tnSetting),
+      saveBooklog: save.bind(null, tnSetting),
+      loadBooklog: load.bind(null, tnSetting),
     };
   }
 

@@ -7,6 +7,9 @@ define(
   ['../booklog','../clientSaver'],
   (booklog, clientSaver)=>{
 
+    function saveBooklogs(bookList) {
+      return Promise.resolve(bookList);
+    }
     const saver = clientSaver.generate();
 
     function saveEnv(savedObj0, environ) {
@@ -74,8 +77,10 @@ define(
       ui.bhvSearchButton.regHandle(()=>{
         return booklog.getBookshelf(environ.userid,{
           count: environ.count,
-        }).then((data)=>{
+        }).then(async (data)=>{
           message(`${data.tana.name}(${environ.userid})を取得しました。`);
+          await saveBooklogs(data);
+          message(`${data.tana.name}(${environ.userid})の本を登録しました。`);
         }).catch((err)=>{
           message(`${environ.userid}の取得に失敗しました。。`);
           throw err;

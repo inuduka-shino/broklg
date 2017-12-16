@@ -35,12 +35,17 @@ define((require)=>{
       }
     });
     return callJsonp(
-      [
-        'https://api.booklog.jp/json',
-        user,
-      ].join('/'),
-      param
-    );
+        [
+          'https://api.booklog.jp/json',
+          user,
+        ].join('/'),
+        param
+      ).then((data)=>{
+        return {
+          tanaName: data.tana.name,
+          books: data.books,
+        };
+      });
   }
   return {
     getBookshelf,
