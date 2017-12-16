@@ -72,7 +72,9 @@ define(
       }
 
       ui.bhvSearchButton.regHandle(()=>{
-        return booklog.getBookshelf(environ.userid).then((data)=>{
+        return booklog.getBookshelf(environ.userid,{
+          count: environ.count,
+        }).then((data)=>{
           message(`${data.tana.name}(${environ.userid})を取得しました。`);
         }).catch((err)=>{
           message(`${environ.userid}の取得に失敗しました。。`);

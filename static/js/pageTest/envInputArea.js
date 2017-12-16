@@ -56,10 +56,10 @@ define([
             });
   const pArea = genBar([pForm]);
   function setVal(valObj) {
-    if (typeof valObj.id !== 'undefined') {
-      pInputId.setVal(valObj.id);
+    if (typeof valObj.userid !== 'undefined') {
+      pInputId.setVal(valObj.userid);
     }
-    if (typeof valObj.Count !== 'undefined') {
+    if (typeof valObj.count !== 'undefined') {
       pInputCount.setVal(valObj.count);
     }
   }
