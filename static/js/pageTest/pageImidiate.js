@@ -60,12 +60,21 @@ define([
       pAreaPlay,
     ]);
   }).then(() => {
-    console.log('pageImidiate loaded!');
-    pMessage.text('parts loaded.');
-    //eslint-disable-next-line global-require
-    require(['./page'], (page) => {
-      page(parts);
-    });
+    pMessage.text('imidiate parta loaded and next parts loading ...');
+    try {
+      //eslint-disable-next-line global-require
+      require(['./page'], (page) => {
+        try {
+          page(parts);
+        } catch (err) {
+          pMessage.text('error on page.js function!');
+          throw err;
+        }
+      });
+    } catch (err) {
+      pMessage.text('error on load page.js!');
+      throw err;
+    }
   });
 
 });
