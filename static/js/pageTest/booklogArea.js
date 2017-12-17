@@ -1,12 +1,16 @@
-/* envInputArea.js */
+/* booklogArea.js */
 /*eslint-env browser */
 /*eslint no-console: off */
 /*global define */
 
 define([
   'domUtil',
+  '../behaveOfButton',
 ],
-(domUtil) => {
+(
+  domUtil,
+  behaveOfButton,
+) => {
   const {
     create,
     genBar,
@@ -14,6 +18,18 @@ define([
 
 
   const handlers=[];
+  const parts = {},
+  pGetBooklogButton = parts.pGetBooklogButton = create('button')
+                .addClass('btn')
+                .addClass('btn-empty')
+                .addClass('btn-light')
+                .text('booklog取得'),
+  pClearButton = parts.pClearButton = create('button')
+                .addClass('btn')
+                .addClass('btn-empty')
+                .addClass('btn-light')
+                .text('clear');
+
   const pInputId = create('input')
           .addClass('form-control')
           .setAttr('type','text'),
@@ -54,7 +70,10 @@ define([
                 }
               }, Promise.resolve());
             });
-  const pArea = genBar([pForm]);
+  const pArea = create('div').append([
+    genBar([pGetBooklogButton, pClearButton,]),
+    genBar([pForm]),
+  ]);
   function setVal(valObj) {
     if (typeof valObj.userid !== 'undefined') {
       pInputId.setVal(valObj.userid);
@@ -81,6 +100,19 @@ define([
   function onSubmit(func) {
     handlers.push(func);
   }
+
+  const
+    bhvSearchButton = behaveOfButton({
+      pButton: parts.pGetBooklogButton, //eslint-disable-line object-shorthand
+      workingLabel: 'working...',
+      errorLabel: 'ERROR!',
+    }),
+    bhvClearButton = behaveOfButton({
+      pButton: parts.pClearButton,
+      workingLabel: '...',
+      errorLabel: 'ERROR!',
+    });
+
   return {
     genParts,
     onSubmit,
@@ -88,5 +120,8 @@ define([
     hide,
     show,
     toggle,
+
+    bhvSearchButton,
+    bhvClearButton,
   };
 });

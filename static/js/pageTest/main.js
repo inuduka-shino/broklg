@@ -15,31 +15,41 @@ define(
 
     const message = ui.message;
 
-    ui.bhvClearButton.active();
-    ui.bhvClearButton.regHandle(()=>{
-      message('----');
-      ui.bhvSearchButton.reset();
+    ui.loadedBooklogArea.then((booklogArea) => {
+      booklogArea.bhvClearButton.active();
+      booklogArea.bhvClearButton.regHandle(()=>{
+        message('----');
+        booklogArea.bhvSearchButton.reset();
+      });
     });
 
     const loadedEnv = loadEnv(saver);
 
-    loadedEnv.then(({
-        environ,
-      })=>{
-      ui.bhvSearchButton.active();
 
+    Promise.all([
+      ui.loadedBooklogArea,
+      loadedEnv,
+    ]).then((args) => {
+      const booklogArea = args[0];
+      const {
+        environ,
+        saveEnv,
+      } = args[1];
+
+      booklogArea.bhvSearchButton.active();
 
       if (ui.mobile) {
         message('Mobile Start!');
       } else {
         message('ready.');
       }
+
       if (environ.userid === null) {
-        ui.bhvSearchButton.error(true);
+        booklogArea.bhvSearchButton.error(true);
         message('useridが登録されていません。');
       }
 
-      ui.bhvSearchButton.regHandle(()=>{
+      booklogArea.bhvSearchButton.regHandle(()=>{
         return booklog.getBookshelf(environ.userid,{
           count: environ.count,
         }).then(async (data)=>{
@@ -52,19 +62,8 @@ define(
         });
       });
 
-    });
-
-    Promise.all([
-      ui.loadedInputEnv,
-      loadedEnv,
-    ]).then((args) => {
-      const envInputArea = args[0];
-      const {
-        environ,
-        saveEnv,
-      } = args[1];
-      envInputArea.setVal(environ);
-      envInputArea.onSubmit((valObj)=>{
+      booklogArea.setVal(environ);
+      booklogArea.onSubmit((valObj)=>{
         let badInputFlag = false;
         [
           ['id', 'userid'],
@@ -73,9 +72,9 @@ define(
           const [iaName, envName] = info;
           if (valObj[iaName] === '') {
             if (environ[envName] === null) {
-              envInputArea.hide();
+              booklogArea.hide();
             } else {
-              envInputArea.setVal({
+              booklogArea.setVal({
                 [iaName]: environ[envName],
               });
             }
@@ -97,15 +96,15 @@ define(
           saveFlag = true;
         }
         if (saveFlag) {
-          ui.bhvSearchButton.reset();
+          booklogArea.bhvSearchButton.reset();
           saveEnv();
         }
 
-        envInputArea.hide();
+        booklogArea.hide();
       });
       ui.bhvOpenEnvInputButton.active();
       ui.bhvOpenEnvInputButton.regHandle(()=>{
-        envInputArea.toggle();
+        booklogArea.toggle();
       });
     });
 

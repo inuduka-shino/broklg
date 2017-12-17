@@ -23,16 +23,6 @@ define([
         pAreaMsg = genBar(pMessage);
 
   const
-        pGetBooklogButton = parts.pGetBooklogButton = create('button')
-                      .addClass('btn')
-                      .addClass('btn-empty')
-                      .addClass('btn-light')
-                      .text('booklog取得'),
-        pClearButton = parts.pClearButton = create('button')
-                      .addClass('btn')
-                      .addClass('btn-empty')
-                      .addClass('btn-light')
-                      .text('clear'),
         pInputEnvButton = parts.pInputEnvButton = create('button')
                       .addClass('btn')
                       .addClass('btn-empty')
@@ -40,9 +30,7 @@ define([
                       .text('input Env'),
         pAreaPlay = genBar(
           [
-            pGetBooklogButton,
             pInputEnvButton,
-            pClearButton,
           ]);
 
   checkLoadedDocument().then(() => {

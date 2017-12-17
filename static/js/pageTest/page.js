@@ -15,40 +15,26 @@ define([
         parts.pMessage.text(msg);
       };
 
-      // first line buttons
-      ui.bhvSearchButton = behaveOfButton({
-        pButton: parts.pGetBooklogButton, //eslint-disable-line object-shorthand
-        workingLabel: 'working...',
-        errorLabel: 'ERROR!',
-      });
-
-      ui.bhvClearButton = behaveOfButton({
-        pButton: parts.pClearButton,
-        workingLabel: '...',
-        errorLabel: 'ERROR!',
-      });
-
-
       ui.bhvOpenEnvInputButton = behaveOfButton({
         pButton: parts.pInputEnvButton,
         workingLabel: 'opened!',
         errorLabel: 'ERROR!',
       });
 
-      ui.loadedInputEnv = new Promise((resolve, reject) => {
+      ui.loadedBooklogArea = new Promise((resolve, reject) => {
         try {
           //eslint-disable-next-line global-require
-          require(['envInputArea'], (envInputArea)=>{
-            resolve(envInputArea);
+          require(['booklogArea'], (partsArea)=>{
+            resolve(partsArea);
           });
         } catch (err) {
           console.log('can not load nevInputArea.js !');
           reject(err);
         }
-      }).then((envInputArea)=>{
-        envInputArea.hide();
-        parts.body.append(envInputArea.genParts());
-        return envInputArea;
+      }).then((partsArea)=>{
+        partsArea.hide();
+        parts.body.append(partsArea.genParts());
+        return partsArea;
       });
 
       // delay load parts
