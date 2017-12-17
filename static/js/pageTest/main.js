@@ -7,10 +7,15 @@ define(
   ['../booklog','../clientSaver'],
   (booklog, clientSaver)=>{
 
-    function saveBooklogs(bookList) {
-      return Promise.resolve(bookList);
-    }
     const saver = clientSaver.generate();
+
+    function saveBooklogs(bookList) {
+      return Promise.all(
+        bookList.map((bookinfo)=>{
+          return saver.saveBooklog(bookinfo.id, bookinfo);
+        })
+      );
+    }
 
     function saveEnv(savedObj0, environ) {
       let savedObj = {};
@@ -78,9 +83,9 @@ define(
         return booklog.getBookshelf(environ.userid,{
           count: environ.count,
         }).then(async (data)=>{
-          message(`${data.tana.name}(${environ.userid})を取得しました。`);
-          await saveBooklogs(data);
-          message(`${data.tana.name}(${environ.userid})の本を登録しました。`);
+          message(`${data.tanaName}(${environ.userid})を取得しました。`);
+          await saveBooklogs(data.books);
+          message(`${data.tanaName}(${environ.userid})の本を登録しました。`);
         }).catch((err)=>{
           message(`${environ.userid}の取得に失敗しました。。`);
           throw err;

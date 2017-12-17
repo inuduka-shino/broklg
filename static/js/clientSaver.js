@@ -9,15 +9,15 @@ define(() => {
     tnSetting = 'setting',
     tnBooklog = 'booklog',
     osnNames = [tnSetting, tnBooklog],
-    remakeOsnList = [],
+    remakeOsnList = [tnBooklog],
     dbSchema = {
-      version: 3,
+      version: 4,
       schema: {
         [tnSetting]: {
           keyPath: 'keyName'
         },
         [tnBooklog]: {
-          keyPath: 'isbn'
+          keyPath: 'id'
         },
       } ,
       // developMode: true,
@@ -132,8 +132,8 @@ function generate() {
     return {
       saveSetting: save.bind(null, tnSetting),
       loadSetting: load.bind(null, tnSetting),
-      saveBooklog: save.bind(null, tnSetting),
-      loadBooklog: load.bind(null, tnSetting),
+      saveBooklog: save.bind(null, tnBooklog),
+      loadBooklog: load.bind(null, tnBooklog),
     };
   }
 
