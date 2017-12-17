@@ -23,7 +23,7 @@ define([
         pAreaMsg = genBar(pMessage);
 
   const
-        pButton = parts.pButton = create('button')
+        pGetBooklogButton = parts.pGetBooklogButton = create('button')
                       .addClass('btn')
                       .addClass('btn-empty')
                       .addClass('btn-light')
@@ -40,7 +40,7 @@ define([
                       .text('input Env'),
         pAreaPlay = genBar(
           [
-            pButton,
+            pGetBooklogButton,
             pInputEnvButton,
             pClearButton,
           ]);

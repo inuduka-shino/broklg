@@ -17,7 +17,7 @@ define([
 
       // first line buttons
       ui.bhvSearchButton = behaveOfButton({
-        pButton: parts.pButton, //eslint-disable-line object-shorthand
+        pButton: parts.pGetBooklogButton, //eslint-disable-line object-shorthand
         workingLabel: 'working...',
         errorLabel: 'ERROR!',
       });
