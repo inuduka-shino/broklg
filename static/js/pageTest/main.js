@@ -4,18 +4,12 @@
 /*global define */
 
 define(
-  ['../booklog','../clientSaver', '../dbEnviron'],
-  (booklog, clientSaver, loadEnv)=>{
+  ['../booklog','../clientSaver', '../dbEnviron', '../dbBooklog'],
+  //eslint-disable-next-line max-params
+  (booklog, clientSaver, loadEnv, dbBooklog)=>{
 
-    const saver = clientSaver.generate();
-
-    function saveBooklogs(bookList) {
-      return Promise.all(
-        bookList.map((bookinfo)=>{
-          return saver.saveBooklog(bookinfo.asin, bookinfo);
-        })
-      );
-    }
+    const saver = clientSaver.generate(),
+          dbBlg = dbBooklog(saver);
 
   return (ui)=> {
 
@@ -50,7 +44,7 @@ define(
           count: environ.count,
         }).then(async (data)=>{
           message(`${data.tanaName}(${environ.userid})を取得しました。`);
-          await saveBooklogs(data.books);
+          await dbBlg.saveBooks(data.books);
           message(`${data.tanaName}(${environ.userid})の本を登録しました。`);
         }).catch((err)=>{
           message(`${environ.userid}の取得に失敗しました。。`);
