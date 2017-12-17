@@ -11,13 +11,13 @@ define(() => {
     osnNames = [tnSetting, tnBooklog],
     remakeOsnList = [tnBooklog],
     dbSchema = {
-      version: 4,
+      version: 5,
       schema: {
         [tnSetting]: {
           keyPath: 'keyName'
         },
         [tnBooklog]: {
-          keyPath: 'id'
+          keyPath: 'asin'
         },
       } ,
       // developMode: true,

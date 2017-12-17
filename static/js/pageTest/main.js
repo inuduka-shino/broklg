@@ -1,54 +1,20 @@
-/* index.js */
+/* main.js */
 /*eslint-env browser */
 /*eslint no-console: off */
 /*global define */
 
 define(
-  ['../booklog','../clientSaver'],
-  (booklog, clientSaver)=>{
+  ['../booklog','../clientSaver', '../dbEnviron'],
+  (booklog, clientSaver, loadEnv)=>{
 
     const saver = clientSaver.generate();
 
     function saveBooklogs(bookList) {
       return Promise.all(
         bookList.map((bookinfo)=>{
-          return saver.saveBooklog(bookinfo.id, bookinfo);
+          return saver.saveBooklog(bookinfo.asin, bookinfo);
         })
       );
-    }
-
-    function saveEnv(savedObj0, environ) {
-      let savedObj = {};
-      if (savedObj0 !== null) {
-        savedObj = savedObj0;
-      }
-      if (environ.userid === null) {
-        return Promise.resolove();
-      }
-      savedObj.userid = environ.userid;
-      savedObj.couont = environ.count;
-      return saver.saveSetting('environ', savedObj);
-    }
-    function loadEnv() {
-      return saver.loadSetting('environ')
-          .then((savedObj)=>{
-            let environ = null;
-            if (savedObj === null) {
-              environ ={
-                userid: null,
-                count: null,
-              };
-            } else {
-              environ = {
-                userid: savedObj.userid,
-                count: savedObj.couont,
-              };
-            }
-            return {
-              environ,
-              saveEnv: saveEnv.bind(null, savedObj, environ),
-            };
-          });
     }
 
   return (ui)=> {
@@ -61,7 +27,7 @@ define(
       ui.bhvSearchButton.reset();
     });
 
-    const loadedEnv = loadEnv();
+    const loadedEnv = loadEnv(saver);
 
     loadedEnv.then(({
         environ,
