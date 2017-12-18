@@ -23,7 +23,7 @@ define([
                 .addClass('btn')
                 .addClass('btn-empty')
                 .addClass('btn-light')
-                .text('booklog取得'),
+                .text('取得開始'),
   pClearButton = parts.pClearButton = create('button')
                 .addClass('btn')
                 .addClass('btn-empty')
@@ -31,11 +31,13 @@ define([
                 .text('clear');
 
   const pInputId = create('input')
+          .addFeature('val')
           .addClass('form-control')
           .setAttr('type','text'),
         pInputCount = create('input')
-                .addClass('form-control')
-                .setAttr('type','text'),
+          .addFeature('val')
+          .addClass('form-control')
+          .setAttr('type','text'),
         pLabelId = create('label')
           .text('booklog userId:'),
         pLabelCount = create('label')

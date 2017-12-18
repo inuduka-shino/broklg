@@ -23,16 +23,41 @@ define([
         pAreaMsg = genBar(pMessage);
 
   const
-        pInputEnvButton = parts.pInputEnvButton = create('button')
+        pInputISBN = create('input')
+                .addClass('form-control')
+                .setAttr('type','text'),
+        pLabelISBN = create('label')
+          .text('isbn for search:'),
+        pSubmitButton = create('button')
+          .addClass('btn')
+          .setAttr('type', 'submit')
+          .append(
+            create('span')
+            .addClass('small')
+            .text('検索')
+          ),
+        pForm = create('form')
+          .append([
+            pLabelISBN,
+            pInputISBN,
+            pSubmitButton,
+        ]),
+        pInputEnvButton = create('button')
                       .addClass('btn')
                       .addClass('btn-empty')
                       .addClass('btn-light')
-                      .text('input Env'),
-        pAreaPlay = genBar(
-          [
-            pInputEnvButton,
-          ]);
+                      .text('booklog取得'),
+        pAreaPlay = create('div').append([
+          genBar([pForm,]),
+          genBar([pInputEnvButton,]),
+        ]);
 
+  parts.pInputEnvButton = pInputEnvButton;
+  parts.isbnParts = {
+    pForm,
+    pInputISBN,
+    pSubmitButton,
+  };
   checkLoadedDocument().then(() => {
     const pBody = body();
     pBody.clear();
