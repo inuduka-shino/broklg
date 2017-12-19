@@ -22,7 +22,7 @@ define(()=>{
         pButton.addClass('btn-light');
         pButton.removeClass('btn-error');
       } else {
-        pButton.text(errorLabel);
+        pButton.setText(errorLabel);
         pButton.removeClass('btn-light');
         pButton.addClass('btn-error');
       }
@@ -34,7 +34,7 @@ define(()=>{
       }
 
       stat = 'push';
-      pButton.text(workingLabel);
+      pButton.setText(workingLabel);
       pButton.addClass('btn-light');
 
       const prmsHandles = handles.reduce(
@@ -45,7 +45,7 @@ define(()=>{
         );
       prmsHandles.then(()=>{
         stat = 'release';
-        pButton.text(label);
+        pButton.setText(label);
         pButton.removeClass('btn-light');
       },(err)=>{
         // message(err);
@@ -58,7 +58,7 @@ define(()=>{
       handles.push(handle);
     }
     function reset() {
-      pButton.text(label);
+      pButton.setText(label);
       pButton.removeClass('btn-error');
       pButton.removeClass('btn-light');
       stat = 'release';

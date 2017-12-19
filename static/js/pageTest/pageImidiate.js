@@ -16,41 +16,53 @@ define([
   } =domUtil;
 
   const parts = {};
-  const pTitle = create('h2').text('Broklg search');
+  const pTitle = create('h2')
+          .addFeature('text')
+          .setText('Broklg search');
 
   const
-        pMessage = parts.pMessage = create('span').text('...'),
+        pMessage = parts.pMessage = create('span')
+            .addFeature('text')
+            .setText('...'),
         pAreaMsg = genBar(pMessage);
 
   const
         pInputISBN = create('input')
+                .addFeature(['class','attribute'])
                 .addClass('form-control')
                 .setAttr('type','text'),
         pLabelISBN = create('label')
-          .text('isbn for search:'),
+          .addFeature('text')
+          .setText('isbn for search:'),
         pSubmitButton = create('button')
+          .addFeature(['class','attribute', 'event' , 'container'])
           .addClass('btn')
           .setAttr('type', 'submit')
           .append(
             create('span')
+            .addFeature(['class','text'])
             .addClass('small')
-            .text('検索')
+            .setText('検索')
           ),
         pForm = create('form')
+          .addFeature(['container'])
           .append([
             pLabelISBN,
             pInputISBN,
             pSubmitButton,
         ]),
         pInputEnvButton = create('button')
-                      .addClass('btn')
-                      .addClass('btn-empty')
-                      .addClass('btn-light')
-                      .text('booklog取得'),
-        pAreaPlay = create('div').append([
-          genBar([pForm,]),
-          genBar([pInputEnvButton,]),
-        ]);
+            .addFeature(['class','text', 'event'])
+            .addClass('btn')
+            .addClass('btn-empty')
+            .addClass('btn-light')
+            .setText('booklog取得'),
+        pAreaPlay = create('div')
+            .addFeature(['container'])
+            .append([
+              genBar([pForm,]),
+              genBar([pInputEnvButton,]),
+            ]);
 
   parts.pInputEnvButton = pInputEnvButton;
   parts.isbnParts = {
@@ -59,7 +71,7 @@ define([
     pSubmitButton,
   };
   checkLoadedDocument().then(() => {
-    const pBody = body();
+    const pBody = body().addFeature(['container', 'text']);
     pBody.clear();
     parts.body = pBody;
     if (deviceType()==='mobile') {
@@ -73,19 +85,19 @@ define([
       pAreaPlay,
     ]);
   }).then(() => {
-    pMessage.text('imidiate parta loaded and next parts loading ...');
+    pMessage.setText('imidiate parta loaded and next parts loading ...');
     try {
       //eslint-disable-next-line global-require
       require(['./page'], (page) => {
         try {
           page(parts);
         } catch (err) {
-          pMessage.text('error on page.js function!');
+          pMessage.setText('error on page.js function!');
           throw err;
         }
       });
     } catch (err) {
-      pMessage.text('error on load page.js!');
+      pMessage.setText('error on load page.js!');
       throw err;
     }
   });

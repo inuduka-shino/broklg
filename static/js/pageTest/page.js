@@ -12,7 +12,7 @@ define([
     return (parts) => {
       // message
       const message = ui.message = (msg)=>{
-        parts.pMessage.text(msg);
+        parts.pMessage.setText(msg);
       };
 
       ui.bhvOpenEnvInputButton = behaveOfButton({

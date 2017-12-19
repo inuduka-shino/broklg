@@ -20,37 +20,44 @@ define([
   const handlers=[];
   const parts = {},
   pGetBooklogButton = parts.pGetBooklogButton = create('button')
+                .addFeature(['class', 'text', 'event'])
                 .addClass('btn')
                 .addClass('btn-empty')
                 .addClass('btn-light')
-                .text('取得開始'),
+                .setText('取得開始'),
   pClearButton = parts.pClearButton = create('button')
+                .addFeature(['class', 'text', 'event'])
                 .addClass('btn')
                 .addClass('btn-empty')
                 .addClass('btn-light')
-                .text('clear');
+                .setText('clear');
 
   const pInputId = create('input')
-          .addFeature('val')
+          .addFeature(['val', 'class', 'attribute'])
           .addClass('form-control')
           .setAttr('type','text'),
         pInputCount = create('input')
-          .addFeature('val')
+          .addFeature(['val', 'class', 'attribute'])
           .addClass('form-control')
           .setAttr('type','text'),
         pLabelId = create('label')
-          .text('booklog userId:'),
+          .addFeature('text')
+          .setText('booklog userId:'),
         pLabelCount = create('label')
-          .text('count:'),
+          .addFeature('text')
+          .setText('count:'),
         pSubmitButton = create('button')
+          .addFeature(['class', 'text', 'attribute', 'event', 'container'])
           .addClass('btn')
           .setAttr('type', 'submit')
           .append(
             create('span')
+            .addFeature(['class', 'text'])
             .addClass('small')
-            .text('登録')
+            .setText('登録')
           ),
         pForm = create('form')
+          .addFeature(['container', 'event'])
           .append([
             pLabelId,pInputId,
             pLabelCount,pInputCount,
@@ -72,10 +79,12 @@ define([
                 }
               }, Promise.resolve());
             });
-  const pArea = create('div').append([
-    genBar([pGetBooklogButton, pClearButton,]),
-    genBar([pForm]),
-  ]);
+  const pArea = create('div')
+    .addFeature(['container', 'class'])
+    .append([
+      genBar([pGetBooklogButton, pClearButton,]),
+      genBar([pForm]),
+    ]);
   function setVal(valObj) {
     if (typeof valObj.userid !== 'undefined') {
       pInputId.setVal(valObj.userid);
@@ -96,7 +105,7 @@ define([
   function genParts() {
     return [
        pArea,
-      //row(col(create('div',textElm).text('AAA'))),
+      //row(col(create('div',textElm).setText('AAA'))),
     ];
   }
   function onSubmit(func) {
