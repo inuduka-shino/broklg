@@ -45,12 +45,18 @@ define([
             .setText('検索')
           ),
         pForm = create('form')
-          .addFeature(['container'])
-          .append([
-            pLabelISBN,
-            pInputISBN,
-            pSubmitButton,
-        ]),
+          .feature(['container', 'event'],
+          (form) => {
+            form
+              .on('submit', (event)=>{
+                event.preventDefault();
+              })
+              .append([
+                pLabelISBN,
+                pInputISBN,
+                pSubmitButton,
+              ]);
+        }),
         pInputEnvButton = create('button')
             .addFeature(['class','text', 'event'])
             .addClass('btn')

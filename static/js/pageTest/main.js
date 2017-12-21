@@ -15,6 +15,9 @@ define(
 
     const message = ui.message;
 
+    ui.bhvSearchISBN.onSubmit((val)=>{
+      message(`ISBN:${val}`);
+    });
     ui.loadedBooklogArea.then((booklogArea) => {
       booklogArea.bhvClearButton.active();
       booklogArea.bhvClearButton.regHandle(()=>{
@@ -24,7 +27,6 @@ define(
     });
 
     const loadedEnv = loadEnv(saver);
-
 
     Promise.all([
       ui.loadedBooklogArea,

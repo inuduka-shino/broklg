@@ -15,6 +15,32 @@ define([
         parts.pMessage.setText(msg);
       };
 
+      ui.bhvSearchISBN = (()=>{
+        const {
+          pForm,
+          pInputISBN,
+        } = parts.isbnParts;
+
+        const handlers = [];
+        function onSubmit(handler) {
+          handlers.push(handler);
+        }
+
+        pForm.addFeature(['event']);
+        pInputISBN.addFeature(['val']);
+        pForm.on('submit', (event)=>{
+          event.preventDefault();
+          handlers.forEach((handler)=>{
+            handler(pInputISBN.val());
+          });
+        });
+
+        return {
+          onSubmit,
+        };
+
+      })();
+
       ui.bhvOpenEnvInputButton = behaveOfButton({
         pButton: parts.pInputEnvButton,
         workingLabel: 'opened!',
