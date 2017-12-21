@@ -58,11 +58,12 @@ define([
             .addClass('btn-light')
             .setText('booklog取得'),
         pAreaPlay = create('div')
-            .addFeature(['container'])
-            .append([
-              genBar([pForm,]),
-              genBar([pInputEnvButton,]),
-            ]);
+            .feature(['container'],(parts) =>{
+              parts.append([
+                genBar([pForm,]),
+                genBar([pInputEnvButton,]),
+              ]);
+            });
 
   parts.pInputEnvButton = pInputEnvButton;
   parts.isbnParts = {
