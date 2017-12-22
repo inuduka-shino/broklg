@@ -11,12 +11,34 @@ define(
     const saver = clientSaver.generate(),
           dbBlg = dbBooklog(saver);
 
+    function displayBooklogInfo(info) {
+      console.log({
+        catalog: info.catalog,
+        title: info.title,
+        author: info.author,
+        image: info.image,
+
+      });
+    }
+
   return (ui)=> {
 
     const message = ui.message;
 
     ui.bhvSearchISBN.onSubmit((val)=>{
-      message(`ISBN:${val}`);
+      message(`search ISBN:${val} ...`);
+      dbBlg.getBookInfo(val)
+        .then((info)=>{
+          if (info === null) {
+            message(`見つかりません(${val})`);
+            return;
+          }
+          message(`[${val}]が見つかりました。(${info.title})`);
+          displayBooklogInfo(info);
+        },(err)=>{
+          message(`search error by ${val}`);
+          throw err;
+        });
     });
     ui.loadedBooklogArea.then((booklogArea) => {
       booklogArea.bhvClearButton.active();
