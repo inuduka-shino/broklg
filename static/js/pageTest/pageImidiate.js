@@ -83,7 +83,9 @@ define([
     parts.body = pBody;
     if (deviceType()==='mobile') {
       parts.mobile = true;
-      pBody.addClass('smartphone');
+      pBody.feature('class',(p)=>{
+        p.addClass('smartphone');
+      });
     }
   }).then(()=>{
     parts.body.append([

@@ -47,21 +47,31 @@ define([
         errorLabel: 'ERROR!',
       });
 
-      ui.loadedBooklogArea = new Promise((resolve, reject) => {
-        try {
-          //eslint-disable-next-line global-require
-          require(['booklogArea'], (partsArea)=>{
-            resolve(partsArea);
-          });
-        } catch (err) {
-          console.log('can not load nevInputArea.js !');
-          reject(err);
-        }
-      }).then((partsArea)=>{
-        partsArea.hide();
-        parts.body.append(partsArea.genParts());
-        return partsArea;
+      [
+        ui.loadedBooklogArea,
+        ui.loadedBooklogInfoArea,
+      ] = [
+        'booklogArea',
+        'booklogInfoArea'
+      ].map((modulePath)=>{
+        return new Promise((resolve, reject) => {
+          try {
+            //eslint-disable-next-line global-require
+            require([modulePath], (partsArea)=>{
+              resolve(partsArea);
+            });
+          } catch (err) {
+            console.log('can not load nevInputArea.js !');
+            reject(err);
+          }
+        }).then((partsArea)=>{
+          partsArea.hide();
+          parts.body.append(partsArea.genParts());
+          return partsArea;
+        });
+
       });
+
 
       // delay load parts
       message('gui function start.');
