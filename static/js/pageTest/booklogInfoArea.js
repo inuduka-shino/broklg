@@ -47,19 +47,29 @@ define([
     ].forEach(([name, dispName])=>{
       parts.rows[name] = dispElm(dispName);
     });
+    parts.img = create('img');
     parts.top = create('div').feature(
       ['attribute','container'],
       (top)=>{
-          top.setAttr('style', 'display:grid');
-          top.append(Object.values(parts.rows));
+          top
+            .setAttr('style', 'display:grid')
+            .append(Object.values(parts.rows))
+            .append(parts.img);
       }
     );
+
+    parts.img.feature(['attribute'], (p) => {
+      parts.top.setImg = p.setAttr.bind(null, 'src');
+    });
     return parts.top;
   }
   function setInfo(info) {
     Object.entries(parts.rows).forEach(([name, elm])=>{
       elm.setText(info[name]);
     });
+  }
+  function setImg(url) {
+    return parts.top.setImg(url);
   }
   function hide() {
     //
@@ -68,5 +78,6 @@ define([
     hide,
     genParts,
     setInfo,
+    setImg,
   };
 });

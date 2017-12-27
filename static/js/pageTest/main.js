@@ -27,9 +27,9 @@ define(
           catalog: info.catalog,
           title: info.title,
           author: info.author,
-          image: info.image,
-
+          //image: info.image,
         });
+        bhvBlgInfoArea.setImg(info.image);
       };
     }).then((displayBooklogInfo)=>{
       ui.bhvSearchISBN.onSubmit((val)=>{
